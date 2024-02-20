@@ -1,0 +1,27 @@
+.main{
+    width: calc(100% - 320px);
+    padding: 40px;
+    padding-left: 280px;
+}
+
+.main h1{
+    font-size: 28px;
+}
+
+.mb{
+    margin-bottom: 12px;
+}
+
+.form{
+    max-width: 500px;
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+}
+
+.color{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #000;
+}

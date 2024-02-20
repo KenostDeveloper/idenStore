@@ -1,0 +1,120 @@
+.Nav{
+    height: 60px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background: #FFFFFF;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.logo img{
+    width: 175px;
+    min-width: 175px;
+    transition: all 0.4s;
+}
+
+.logo img:hover{
+    transform: scale(1.05);
+}
+
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.catalog{
+    padding: 0 20px;
+    background: #02121C;
+    display: flex;
+    border-radius: 8px;
+    gap: 8px;
+    margin-left: 20px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+
+.catalog p{
+    color: #FFF;
+    font-size: 14px;
+}
+
+.left{
+    display: flex;
+    align-items: center;
+    width: 60%;
+}
+
+.right{
+    display: flex;
+    align-items: center;
+    width: 40%;
+    justify-content: flex-end;
+}
+
+.search{
+    margin-left: 20px;
+    background: #EEEEEE;
+    height: 40px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    color: #02121C;
+    font-size: 14px;
+    position: relative;
+}
+
+.search::before{
+    content: "";
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    background-image: url('/search.svg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    right: 20px;
+    transform: translate(0, -50%);
+    top: 50%;
+}
+
+.search input{
+    padding: 0 20px;
+    width: 100%;
+    height: 100%;
+}
+
+.social{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-right: 30px;
+}
+
+.social a svg{
+    width: 20px;
+}
+
+.social a svg path{
+    fill: #02121C;
+}
+
+.card{
+    padding-left: 15px;
+    margin-left: 15px;
+    position: relative;
+    border-left: 1px solid #EEEEEE;
+}
+
+
+.tel{
+    font-size: 14px;
+    color: #02121C;
+    font-weight: 500;
+
+}

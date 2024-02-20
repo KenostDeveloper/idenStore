@@ -1,0 +1,28 @@
+.menu{
+    height: 100vh;
+    position: fixed;
+    top: 0;
+}
+
+.menu nav{
+    height: 100%;
+}
+
+.menuLogo{
+    width: 100%;
+    padding: 40px 0px 50px 12px;
+    transition: all 0.4s;
+    transform: scale(0.95);
+}
+
+.menuLogo img{
+    width: 80%;
+}
+
+.menuLogo:hover{
+    transform: scale(1);
+}
+
+.link a{
+    pointer-events: none;
+}

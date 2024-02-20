@@ -1,0 +1,43 @@
+
+.menu p{
+    position: relative;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.menu p.active::before{
+    transform: translate(0, -50%) rotate(0deg);
+    transition: all 0.4s;
+}
+
+.menu p::before{
+    content: "";
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    background-image: url('/list.svg');
+    width: 10px;
+    height: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: translate(0, -50%) rotate(180deg);
+    transition: all 0.4s;
+}
+
+.menuItem{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow: hidden;
+    transition: all 0.6s;
+    max-height: 0px;
+}
+
+.menuItem a{
+    color: #02121C;
+    padding: 7px 22px;
+    background-color: #EEEEEE;
+    margin-right: 26px;
+    border-radius: 8px;
+}
+

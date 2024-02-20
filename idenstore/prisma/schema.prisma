@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+//Пользователи
+
+
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String?
+  provider          String
+  password          String?
+  providerAccountId String?
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  image String?
+  role String @default("USER")
+  accounts      Account[]
+  sessions      Session[]
+}
+
+//Категория товара
+model Category {
+  id Int    @id @default(autoincrement())
+  name String //Название
+  card Card[]
+}
+
+
+model Product{
+  id Int    @id @default(autoincrement())
+  acticle String
+  card     Card       @relation(fields: [id_card], references: [id])
+  id_card Int
+  color     Color       @relation(fields: [id_color], references: [id])
+  id_color Int
+  size     Size       @relation(fields: [id_size], references: [id])
+  id_size Int
+  price Float
+  isShow Boolean
+  image Image[]
+}
+
+
+model Image {
+  id Int    @id @default(autoincrement())
+  product     Product       @relation(fields: [id_product], references: [id])
+  id_product Int
+  name String
+}
+
+model Card{
+  id  Int    @id @default(autoincrement())
+  name String 
+  description String ? @db.Text
+  company     Company?       @relation(fields: [id_company], references: [id])
+  id_company Int?
+  product Product[]
+  category     Category?       @relation(fields: [id_category], references: [id])
+  id_category Int ?
+}
+
+
+model Company {
+  id Int    @id @default(autoincrement())
+  product Card[]
+  name String
+}
+
+model Color{
+  id Int    @id @default(autoincrement())
+  name String
+  code String
+  product Product[]
+}
+
+model Size{
+  id Int    @id @default(autoincrement())
+  name String
+  product Product[]
+}
