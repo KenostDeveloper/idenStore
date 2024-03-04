@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
+import { Category } from "@prisma/client";
 
 
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -13,14 +14,31 @@ export async function POST(req: NextRequest, res: NextResponse) {
     try{
         const data = await req.formData()
         const name = data.get('name') as string;
+        const id_parent = data.get('id_parent') as string;
+        const product_name = data.get('product_name') as string;
 
-        const category = await db.category.create({
-            data: {
-                name: name,
-            }
-        });
-    
+
+        if(!id_parent){
+            const category = await db.category.create({
+                data: {
+                    name: name,
+                    product_name: product_name
+                }
+            });
+            return NextResponse.json({success: true, message: "Категория успешно создана!", category});
+
+        }else{
+            const category = await db.category.create({
+                data: {
+                    name: name,
+                    id_parent: Number(id_parent),
+                    product_name: product_name
+                }
+            });
         return NextResponse.json({success: true, message: "Категория успешно создана!", category});
+        }
+        
+    
     }catch(e){
         return NextResponse.json({success: false, message: "Произошла неизвестная ошибка, попробуйте снова :(", e});
     }
@@ -28,12 +46,61 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
 
 export async function GET(req: NextRequest) {
-    try{
-        const category = await db.category.findMany();
-    
-        return NextResponse.json({success: true, category});
-    }catch(e){
-        return NextResponse.json({success: false, message: "Произошла неизвестная ошибка, попробуйте снова :(", e});
+
+    let level = req.nextUrl.searchParams.get('level') as string
+    let sort = req.nextUrl.searchParams.get('sort') as string
+
+    if(sort){
+        try{
+            const category:any = await db.category.findMany({
+                where: {
+                    id_parent: null
+                }
+            });
+
+            for(let i = 0; i<category.length; i++){
+                let categoryEl = await db.category.findMany({
+                    where: {
+                        id_parent: category[i].id
+                    }
+                })
+
+                category[i].sort_id = `${i+1}`
+                category[i].children = categoryEl;
+
+                for(let j = 0; j<categoryEl.length; j++){
+                    category[i].children[j].sort_id = `${i+1}-${j+1}`
+                }
+            }
+        
+            return NextResponse.json({success: true, category});
+        }catch(e){
+            return NextResponse.json({success: false, message: "Произошла неизвестная ошибка, попробуйте снова :(", e});
+        }
+    }else{
+        if(!level){
+            try{
+                const category = await db.category.findMany();
+            
+                return NextResponse.json({success: true, category});
+            }catch(e){
+                return NextResponse.json({success: false, message: "Произошла неизвестная ошибка, попробуйте снова :(", e});
+            }
+        }else{
+            if(Number(level) == 1){
+                try{
+                    const category = await db.category.findMany({
+                        where: {
+                            id_parent: null
+                        }
+                    });
+                
+                    return NextResponse.json({success: true, category});
+                }catch(e){
+                    return NextResponse.json({success: false, message: "Произошла неизвестная ошибка, попробуйте снова :(", e});
+                }
+            }
+        }
     }
 }
 

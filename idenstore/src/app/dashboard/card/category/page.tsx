@@ -4,7 +4,7 @@ import {useSession } from "next-auth/react";
 import {useEffect, useState } from "react";
 import styles from './create.module.css'
 import DashboardAccess from "@/components/DashboardAccess/DashboardAccess.components";
-import { Button, Input, Table, Modal, ButtonToolbar, Placeholder } from "rsuite";
+import { Button, Input, Table, Modal, ButtonToolbar, Placeholder, InputPicker } from "rsuite";
 import axios from "axios";
 import toast from "react-hot-toast";
 const { Column, HeaderCell, Cell } = Table;
@@ -18,7 +18,27 @@ export default function DashnoardCategory() {
 
   const [user, setUser] = useState<any>([]);
 
-  const [name, setName] = useState("")
+  // const data = [
+  //   {
+  //     id: '1',
+  //     labelName: 'Car',
+  //     status: 'ENABLED',
+  //     children: [
+  //       {
+  //         id: '1-1',
+  //         labelName: 'Mercedes Benz',
+  //         status: 'ENABLED',
+  //         count: 460
+  //       }
+  //     ]
+  //   }
+  // ];
+
+  const [categoryAdd, setCategoryAdd] = useState({
+    name: "",
+    product_name: "",
+    id_parent: ""
+  })
   
 
   useEffect(() => {
@@ -34,7 +54,9 @@ export default function DashnoardCategory() {
   const createCategory = async() => {
     setLoadingBtn(true)
     const formData = new FormData();
-    formData.append("name", name);
+    formData.append("name", categoryAdd.name);
+    formData.append("product_name", categoryAdd.product_name);
+    formData.append("id_parent", categoryAdd.id_parent);
 
     axios.post(`/api/card/category`, formData).then(res => {
         if(res.data.success){
@@ -76,18 +98,23 @@ export default function DashnoardCategory() {
     })
   }
 
-
+  const [categoryInput, setCategoryInput] = useState([]);
   const [category, setCategory] = useState<any>([]);
   const [modal, setModal] = useState(false);
   const [update, setUpdate] = useState({
     id: "",
-    name: ""
+    name: "",
   })
 
   useEffect(() => {
-    axios.get(`/api/card/category`).then(res => {
+    axios.get(`/api/card/category?sort=true`).then(res => {
       setCategory(res.data?.category);
     })
+
+    axios.get(`/api/card/category?level=1`).then(res => {
+      setCategoryInput(res.data?.category.map((item: any) => ({ label: item.name, value: item.id })));
+    })
+    
   }, [])
 
   if(loading){
@@ -101,27 +128,33 @@ export default function DashnoardCategory() {
       <main className={styles.main}>
         <h1>Добавить категорию</h1>
         <div className={styles.form}>
-          <Input style={{ width: 500 }} className={styles.mb} placeholder="Название категории" value={name} onChange={(value, e) => setName(value)} />
+          <Input style={{ width: 500 }} className={styles.mb} placeholder="Название категории в каталоге" value={categoryAdd.name} onChange={(value, e) => setCategoryAdd({...categoryAdd, name: value})} />
+          <Input style={{ width: 500 }} className={styles.mb} placeholder="Название категории в продукте" value={categoryAdd.product_name} onChange={(value, e) => setCategoryAdd({...categoryAdd, product_name: value})} />
+          <InputPicker data={categoryInput} className={styles.mb} style={{ width: 500 }} placeholder="Родительский элемент" value={categoryAdd.id_parent} onChange={(value: any) => setCategoryAdd({...categoryAdd, id_parent: value})}/>
           <Button onClick={() => createCategory()} loading={loadingBtn} appearance="primary">Добавить</Button>
         </div>
 
         <hr/>
 
         <Table
+        isTree
+        rowKey="sort_id"
         height={700}
         data={category}
-        // onRowClick={rowData => {
-        //   console.log(rowData);
-        // }}
       >
-      <Column width={60} align="center" fixed>
+      <Column width={100} align="center" fixed>
         <HeaderCell>Id</HeaderCell>
         <Cell dataKey="id" />
       </Column>
 
-      <Column width={300}>
-        <HeaderCell>Наименование</HeaderCell>
+      <Column width={200}>
+        <HeaderCell>Название в каталоге</HeaderCell>
         <Cell dataKey="name" />
+      </Column>
+
+      <Column width={200}>
+        <HeaderCell>Название в продукте</HeaderCell>
+        <Cell dataKey="product_name" />
       </Column>
 
       <Column width={150} fixed="right">

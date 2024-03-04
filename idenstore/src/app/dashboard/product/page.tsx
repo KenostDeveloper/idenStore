@@ -12,6 +12,8 @@ import {
   Uploader,
   Table,
   Modal,
+  CheckPicker,
+  SelectPicker,
 } from "rsuite";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -31,6 +33,7 @@ export default function DashnoardProductAdd() {
   const [card, setCard] = useState([]);
   const [color, setColor] = useState([]);
   const [size, setSize] = useState([]);
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     if (typeof getSession == "object") {
@@ -68,6 +71,15 @@ export default function DashnoardProductAdd() {
         }))
       );
     });
+
+    axios.get(`/api/product/tag`).then((res) => {
+      setTags(
+        res.data?.tag?.map((item: any) => ({
+          label: item?.name,
+          value: item?.id,
+        }))
+      );
+    });
   }, []);
 
   const [photoList, setPhotoList] = useState<any>([]);
@@ -79,6 +91,7 @@ export default function DashnoardProductAdd() {
     isShow: true,
     id_color: "",
     id_size: "",
+    id_tag: "",
   });
 
   //Создание продукта
@@ -94,6 +107,7 @@ export default function DashnoardProductAdd() {
     formData.append("isShow", `${product.isShow}`);
     formData.append("id_color", product.id_color);
     formData.append("id_size", product.id_size);
+    formData.append("id_tag", product.id_tag);
     formData.append("image", photoList);
 
     axios
@@ -102,6 +116,7 @@ export default function DashnoardProductAdd() {
         if (res.data.success) {
           toast.success(res.data.message);
           setProductList([res.data.product, ...productList])
+          setPhotoList([])
         } else {
           toast.error(res.data.message);
         }
@@ -132,7 +147,8 @@ export default function DashnoardProductAdd() {
     formData.append("card", update.card);
     formData.append("color", update.color);
     formData.append("size", update.size);
-
+    formData.append("id_tag", update.id_tag);
+    
     axios.put(`/api/product`, formData).then((res) => {
       if (res.data.success) {
         toast.success(res.data.message);
@@ -155,10 +171,11 @@ export default function DashnoardProductAdd() {
     color: "",
     size: "",
     isShow: true,
+    id_tag: ""
   });
 
   useEffect(() => {
-    axios.get(`/api/product`).then((res) => {
+    axios.get(`/api/product?limit=99`).then((res) => {
       setProductList(res.data?.product);
     });
   }, []);
@@ -204,6 +221,7 @@ export default function DashnoardProductAdd() {
             value={product.id_color}
             onChange={(value, e) => setProduct({ ...product, id_color: value })}
           />
+          <SelectPicker data={tags} value={product.id_tag} onChange={(value:any, e) => setProduct({ ...product, id_tag: value })} className={styles.mb} style={{ width: 500 }} appearance="default" placeholder="Теги товара"/>
           <InputPicker
             data={size}
             className={styles.mb}
@@ -222,7 +240,18 @@ export default function DashnoardProductAdd() {
           <Uploader
             className={styles.mb}
             listType="picture"
-            onChange={(fileList) => setPhotoList(fileList.map((i) => i?.name))}
+            onSuccess={(object, type) =>  {
+              // {setPhotoList(fileList.map((i) => i?.name))
+              // console.log(object);
+              if(object.success){
+                // console.log(object?.name)
+                photoList.push(object?.name)
+                // console.log(photoList)
+                // setPhotoList([...photoList, object?.name])
+              }
+              // console.log(type);
+            }}
+            multiple
             action="/api/product/image"
           >
             <button>
@@ -268,8 +297,13 @@ export default function DashnoardProductAdd() {
             <Column width={75}>
               <HeaderCell>Цвет</HeaderCell>
               <Cell>
-                {rowData => <div style={{ backgroundColor: `#${rowData.color.code}` }} className={styles.color}></div>}
+                {rowData => <div style={{ backgroundColor: `#${rowData?.color?.code}` }} className={styles.color}></div>}
               </Cell>
+            </Column>
+
+            <Column width={100}>
+              <HeaderCell>Тег</HeaderCell>
+              <Cell dataKey="tag.name" />
             </Column>
 
             <Column width={200}>
@@ -295,6 +329,7 @@ export default function DashnoardProductAdd() {
                         card: rowData.id_card,
                         isShow: rowData.isShow,
                         price: rowData.price,
+                        id_tag: rowData.id_tag
                       });
                     }}
                   >
@@ -380,6 +415,8 @@ export default function DashnoardProductAdd() {
                 checkedChildren="Отображать на сайте"
                 unCheckedChildren="Не отображать"
               />
+            <SelectPicker data={tags} value={update.id_tag} onChange={(value:any, e) => setUpdate({ ...update, id_tag: value })} className={styles.mb} style={{ width: 500 }} appearance="default" placeholder="Теги товара"/>
+
             </Modal.Body>
             <Modal.Footer>
               <Button

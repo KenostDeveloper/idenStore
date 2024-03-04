@@ -1,11 +1,15 @@
-import React from 'react';
+'use client'
+import React, { useState } from 'react';
 import styles from './Nav.module.css'
 import Link from 'next/link';
+import Basket from '../Basket/Basket.components';
 
 
 const Nav = () => {
+    const [basketActive, setBasketActive] = useState(false)
     return (
         <nav className={styles.Nav}>
+            <Basket active={basketActive} setActive={setBasketActive}/>
             <div className={`container ${styles.container}`}>
                 <div className={styles.left}>
                     <Link className={styles.logo} href="/"><img src="/logo_full_two.svg" alt="" /></Link>
@@ -37,7 +41,7 @@ const Nav = () => {
                     </div>
                     
                     <Link className={styles.tel} href="tel:+78122141930">+7 (812) 214-19-30</Link>
-                    <img className={styles.card} src="/card.svg" alt="корзина" />
+                    <img onClick={() => setBasketActive(true)} className={styles.card} src="/card.svg" alt="корзина" />
                 </div>
             </div>
         </nav>

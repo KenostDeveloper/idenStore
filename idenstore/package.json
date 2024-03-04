@@ -9,9 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cdek-it/widget": "^3.9.3",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@prisma/client": "^5.9.1",
     "axios": "^1.6.7",
+    "framer-motion": "^11.0.8",
     "mv": "^2.1.1",
     "next": "14.1.0",
     "next-auth": "^4.24.6",
@@ -20,7 +22,7 @@
     "react-hot-toast": "^2.4.1",
     "react-hover-slideshow": "^3.0.1",
     "rsuite": "^5.53.2",
-    "swiper": "^11.0.6",
+    "swiper": "^11.0.7",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

@@ -17,6 +17,10 @@ a, a:link, a:visited  {
     text-decoration: none;
 }
 
+a:hover{
+  color: #00CDF0;
+}
+
 a:hover  {
     text-decoration: none;
 }
@@ -112,6 +116,13 @@ body{
   text-align: center !important;
 }
 
+.home .swiper-wrapper{
+  padding-bottom: 44px;
+}
+
+.swiper-pagination-bullet-active{
+  background: #00CDF0 !important;
+}
 
 @media (max-width: 1400px) {
 

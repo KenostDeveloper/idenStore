@@ -11,10 +11,10 @@ const fs = require('fs');
 
 
 export async function POST(req: NextRequest, res: NextResponse) {
-    // const session = await getServerSession(authOptions)
-    // if(!session && session?.user?.role !== "ADMIN"){
-    //     return NextResponse.json({success: false, message: "У вас нет доступа!"});
-    // }
+    const session = await getServerSession(authOptions)
+    if(!session && session?.user?.role !== "ADMIN"){
+        return NextResponse.json({success: false, message: "У вас нет доступа!"});
+    }
 
 
     try{
@@ -25,22 +25,41 @@ export async function POST(req: NextRequest, res: NextResponse) {
         const id_color = data.get('id_color') as string;
         const id_size = data.get('id_size');
         const image = data.get('image') as string;
+        const id_tag = data.get('id_tag') as string;
         const isShow = data.get('isShow')
 
         if(!acticle && !price && !id_card && !id_color){
             return NextResponse.json({success: false, message: "Пожалуйста заполните все поля!"});
         }
 
-        const product = await db.product.create({
-            data: {
-                acticle: acticle,
-                price: Number(price),
-                id_card: Number(id_card),
-                id_color: Number(id_color),
-                id_size: Number(id_size),
-                isShow: Boolean(isShow)
-            }
-        });
+        let product;
+
+        if(id_tag){
+            product = await db.product.create({
+                data: {
+                    acticle: acticle,
+                    price: Number(price),
+                    id_card: Number(id_card),
+                    id_color: Number(id_color),
+                    id_size: Number(id_size),
+                    isShow: Boolean(isShow),
+                    id_tag: Number(id_tag)
+                }
+            });
+        }else{
+            product = await db.product.create({
+                data: {
+                    acticle: acticle,
+                    price: Number(price),
+                    id_card: Number(id_card),
+                    id_color: Number(id_color),
+                    id_size: Number(id_size),
+                    isShow: Boolean(isShow)
+                }
+            });
+        }
+
+        
 
         let imageList = image.split(',');
 
@@ -74,30 +93,161 @@ export async function POST(req: NextRequest, res: NextResponse) {
 export async function GET(req: NextRequest) {
     try{
         let id = req.nextUrl.searchParams.get('id') as string
-    
-        if(!id){
+        let category_id = req.nextUrl.searchParams.get('category_id') as string
 
-            const count = await db.product.count();
+        let page = req.nextUrl.searchParams.get('page') as string
+        let limit = req.nextUrl.searchParams.get('limit') as string
+        let tag = req.nextUrl.searchParams.get('tag') as string
 
+        let getPage = Number(page) || 1;
+        let getLimit = Number(limit) || 9;
+
+        let offset = getPage * getLimit - getLimit;
+
+
+        if(tag){
             const product = await db.product.findMany({
+                take: getLimit,
+                skip: offset,
+                where: {
+                    tag: {
+                        name: tag
+                    }
+                },
                 include: {
-                    card: true,
+                    card: {
+                        include: {
+                            company: true,
+                            category: true
+                        }
+                    },
                     color: true,
                     size: true,
+                    image: true,
+                    tag: true
                 }
             });
 
-            return NextResponse.json({count, product});
+            return NextResponse.json({product});
+        }
+    
 
-        }else{
-            const product = await db.product.findUnique({
+        if(category_id){
+            const count = await db.product.count({
                 where: {
-                    id: Number(id)
+                    card: {
+                        id_category: Number(category_id)
+                    }
+                }
+            });
+
+            const category : any = await db.category.findUnique({
+                where: {
+                    id: Number(category_id)
                 }
             })
 
-            return NextResponse.json({product});
+            if(category?.id_parent != null){
+                category.parent = await db.category.findUnique({
+                    where: {
+                        id: category.id_parent
+                    }
+                })
+            }
+    
+            const product = await db.product.findMany({
+                take: getLimit,
+                skip: offset,
+                where: {
+                    card: {
+                        id_category: Number(category_id)
+                    }
+                },
+                include: {
+                    card: {
+                        include: {
+                            company: true,
+                            category: true
+                        }
+                    },
+                    color: true,
+                    size: true,
+                    image: true,
+                    tag: true
+                }
+            });
+
+            return NextResponse.json({count, category, product});
+        }else{
+            if(!id){
+                const count = await db.product.count();
+    
+                const product = await db.product.findMany({
+                    take: getLimit,
+                    skip: offset,
+                    include: {
+                        card: {
+                            include: {
+                                company: true,
+                                category: true
+                            }
+                        },
+                        color: true,
+                        size: true,
+                        image: true,
+                        tag: true
+                    }
+                });
+    
+                return NextResponse.json({count, product});
+    
+            }else{
+                const product = await db.product.findUnique({
+                    where: {
+                        id: Number(id)
+                    },
+                    include: {
+                        card: {
+                            include: {
+                                company: true,
+                                category: true
+                            }
+                        },
+                        color: true,
+                        size: true,
+                        image: true,
+                        tag: true
+                    }
+                });
+    
+                const photo = await db.image.findMany({
+                    where: {
+                        id_product: Number(id)
+                    }
+                })
+    
+                const cardProduct = await db.product.findMany({
+                    where: {
+                        id_card: product?.id_card
+                    },
+                    include: {
+                        card: {
+                            include: {
+                                company: true,
+                                category: true
+                            }
+                        },
+                        color: true,
+                        size: true,
+                        image: true,
+                        tag: true
+                    }
+                })
+    
+                return NextResponse.json({product, photo, cardProduct});
+            }
         }
+        
 
         
     
@@ -121,6 +271,7 @@ export async function PUT(req: NextRequest) {
         const isShow = data.get('isShow') as string;
         const color = data.get('color') as string;
         const size = data.get('size') as string;
+        const id_tag = data.get('id_tag') as string;
         //const image = data.get('image') as string;
 
 
@@ -133,7 +284,8 @@ export async function PUT(req: NextRequest) {
                 id_card: Number(card),
                 isShow: Boolean(isShow),
                 id_color: Number(color),
-                id_size: Number(size)
+                id_size: Number(size),
+                id_tag: Number(id_tag)
             },
         });
     

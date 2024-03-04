@@ -55,6 +55,8 @@ model User {
 //Категория товара
 model Category {
   id Int    @id @default(autoincrement())
+  id_parent Int?
+  product_name String ?
   name String //Название
   card Card[]
 }
@@ -72,8 +74,16 @@ model Product{
   price Float
   isShow Boolean
   image Image[]
+  basket Basket[]
+  id_tag Int?
+  tag     Tag?       @relation(fields: [id_tag], references: [id])
 }
 
+model Tag{
+  id Int    @id @default(autoincrement())
+  name String @unique
+  product Product[]
+}
 
 model Image {
   id Int    @id @default(autoincrement())
@@ -111,4 +121,20 @@ model Size{
   id Int    @id @default(autoincrement())
   name String
   product Product[]
+}
+
+model BasketToken{
+  id Int    @id @default(autoincrement())
+  token String
+  expires DateTime
+  basket Basket[]
+}
+
+model Basket{
+  id Int    @id @default(autoincrement())
+  product     Product       @relation(fields: [id_product], references: [id])
+  id_product Int
+  token BasketToken @relation(fields: [id_token], references: [id])
+  id_token Int
+  quantity Int
 }

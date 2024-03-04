@@ -10,9 +10,13 @@
     flex-direction: column;
 }
 
+.width{
+    width: 250px;
+}
+
 .ProductCard img{
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .ProductCardText{
@@ -25,6 +29,11 @@
     color: #02121C;
     margin-top: 16px;
     margin-bottom: 12px;
+    height: 57px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
 }
 
 .ProductCardText b{
@@ -38,4 +47,9 @@
     padding: 6px 16px;
     border-radius: 8px;
     width: fit-content;
+}
+
+.btnActive{
+    background: #00CEF2 !important;
+    color: #FFF !important;
 }

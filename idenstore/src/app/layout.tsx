@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
-import Provider from "@/components/Helps/Provider";
-import 'rsuite/dist/rsuite.min.css';
 import "./globals.css";
-import { CustomProvider } from 'rsuite';
-import Nav from "@/components/Nav/Nav.components";
 
 
 const montserrat = Montserrat({ subsets: ["latin"] });
@@ -22,11 +18,7 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={montserrat.className}>
-      <Provider>
-        <CustomProvider>
-          {children}
-        </CustomProvider>
-      </Provider>
+        {children}
       </body>
     </html>
   );

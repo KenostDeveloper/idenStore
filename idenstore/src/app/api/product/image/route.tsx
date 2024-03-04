@@ -26,14 +26,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
         //Получаем тип файла
         //let type = "." + file.type.replace('image/','');
     
-        //const name = uuidv4();
-    
+        let type = "." + file.type.replace('image/','');
+        const name = uuidv4();
+
         //Путь файла
-        const path = `${process.cwd()}/public/product/temp/${file.name}`;
+        const path = `${process.cwd()}/public/product/temp/${name}${type}`;
         //Сохраняем файл
         await writeFile(path, buffer);
 
-        return NextResponse.json({success: true, message: "Файл успешно загружен!", name: `${file.name}`});
+        return NextResponse.json({success: true, message: "Файл успешно загружен!", name: `${name}${type}`});
     }catch(e){
         return NextResponse.json({success: false, message: "Произошла неизвестная ошибка, попробуйте снова :("});
     }
@@ -42,9 +43,21 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
 export async function GET(req: NextRequest) {
     try{
-        const color = await db.color.findMany();
-    
-        return NextResponse.json({success: true, color});
+        let id = req.nextUrl.searchParams.get('id') as string
+
+        if(!id){
+            const photo = await db.image.findMany();
+
+            return NextResponse.json(photo);
+        }else{
+            const photo = await db.image.findMany({
+                where: {
+                    id_product: Number(id)
+                }
+            })
+
+            return NextResponse.json({photo});
+        }
     }catch(e){
         return NextResponse.json({success: false, message: "Произошла неизвестная ошибка, попробуйте снова :(", e});
     }

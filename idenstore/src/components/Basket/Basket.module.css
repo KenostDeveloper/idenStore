@@ -1,0 +1,115 @@
+.Basket{
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0);
+    transition: all 0.7s;
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.Basket.active{
+    background: rgba(0, 0, 0, 0.6);
+    pointer-events: all;
+}
+
+.BasketContent{
+    width: 600px;
+    height: 100vh;
+    right: -100%;
+    position: fixed;
+    background: #FFF;
+    transition: all 0.5s;
+    padding: 32px 40px;
+}
+
+.Basket.active .BasketContent{
+    right: 0;
+}
+
+.title{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+.close{
+    cursor: pointer;
+}
+
+.title h4{
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.itog{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 24px;
+    padding-top: 12px;
+}
+
+.itog p{
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.buttonOrder{
+    width: 100%;
+    padding: 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #02121C;
+    color: #FFF;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.5s;
+}
+
+.buttonOrder:hover{
+    background: #EEEEEE;
+    color: #02121C;
+    transition: all 0.5s;
+}
+
+.buttons{
+    position: absolute;
+    bottom: 0;
+    padding-bottom: 32px;
+    width: calc(100% - 80px);
+    background: #FFF;
+}
+
+.items{
+    overflow-y: auto;
+    height: calc(100% - 200px);
+    padding-bottom: 20px;
+}
+
+.items::-webkit-scrollbar {
+    width: 0;
+}
+
+.centerItem{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.centerItem p{
+    font-size: 20px;
+    font-weight: 500;
+    color: #02121C;
+    width: 350px;
+    margin-top: 20px;
+    text-align: center;
+}

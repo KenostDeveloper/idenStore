@@ -41,3 +41,7 @@
     border-radius: 8px;
 }
 
+.menuItem a.active{
+    background: #02121C;
+    color: #FFF;
+}
