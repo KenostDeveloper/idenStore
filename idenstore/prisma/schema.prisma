@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -50,6 +51,7 @@ model User {
   role String @default("USER")
   accounts      Account[]
   sessions      Session[]
+  emailVerified String?
 }
 
 //Категория товара
@@ -59,6 +61,8 @@ model Category {
   product_name String ?
   name String //Название
   card Card[]
+
+  @@fulltext([name])
 }
 
 
@@ -77,7 +81,17 @@ model Product{
   basket Basket[]
   id_tag Int?
   tag     Tag?       @relation(fields: [id_tag], references: [id])
+  search String?
+  @@fulltext([search])
 }
+
+// model Post {
+//   id      Int    @id
+//   title   String @db.VarChar(255)
+//   content String @db.Text
+
+//   @@fulltext([title, content])
+// }
 
 model Tag{
   id Int    @id @default(autoincrement())
@@ -101,6 +115,9 @@ model Card{
   product Product[]
   category     Category?       @relation(fields: [id_category], references: [id])
   id_category Int ?
+  productProperty productProperty[]
+
+  @@fulltext([name])
 }
 
 
@@ -137,4 +154,13 @@ model Basket{
   token BasketToken @relation(fields: [id_token], references: [id])
   id_token Int
   quantity Int
+}
+
+model productProperty{
+  id Int    @id @default(autoincrement())
+  uid String @default(cuid())
+  card Card @relation(fields: [id_card], references: [id])
+  id_card Int
+  name String
+  value String
 }

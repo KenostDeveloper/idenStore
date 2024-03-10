@@ -16,7 +16,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
         return NextResponse.json({success: false, message: "У вас нет доступа!"});
     }
 
-
     try{
         const data = await req.formData()
         const acticle = data.get('acticle') as string;
@@ -34,6 +33,28 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         let product;
 
+        const card = await db.card.findUnique({
+            where: {
+                id: Number(id_card)
+            },
+            include: {
+                company: true,
+                category: true
+            }
+        });
+
+        const size = await db.size.findUnique({
+            where: {
+                id: Number(id_size)
+            }
+        });
+
+        const color = await db.color.findUnique({
+            where: {
+                id: Number(id_color)
+            }
+        });
+
         if(id_tag){
             product = await db.product.create({
                 data: {
@@ -43,7 +64,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
                     id_color: Number(id_color),
                     id_size: Number(id_size),
                     isShow: Boolean(isShow),
-                    id_tag: Number(id_tag)
+                    id_tag: Number(id_tag),
+                    search: `${card?.category?.name} ${card?.company?.name} ${card?.name} ${card?.company?.name} ${size?.name} ${color?.name}`
                 }
             });
         }else{
@@ -54,7 +76,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
                     id_card: Number(id_card),
                     id_color: Number(id_color),
                     id_size: Number(id_size),
-                    isShow: Boolean(isShow)
+                    isShow: Boolean(isShow),
+                    search: `${card?.category?.name} ${card?.company?.name} ${card?.name} ${card?.company?.name} ${size?.name} ${color?.name}`
                 }
             });
         }
@@ -75,13 +98,13 @@ export async function POST(req: NextRequest, res: NextResponse) {
             });
 
             mv(`${process.cwd()}/public/product/temp/${imageList[i]}`, `${process.cwd()}/public/product/${imageList[i]}`, function(err:any) {
-                return NextResponse.json({success: false, message: "Произошла ошибка при загрузке изображений!"});
+                //return NextResponse.json({success: false, message: "Произошла ошибка при загрузке изображений!"});
             });
         }
 
-        fs.readdirSync(`${process.cwd()}/public/product/temp/`).forEach((file: any) => {
-            fs.unlinkSync(`${process.cwd()}/public/product/temp/${file}`);
-        });
+        // fs.readdirSync(`${process.cwd()}/public/product/temp/`).forEach((file: any) => {
+        //     fs.unlinkSync(`${process.cwd()}/public/product/temp/${file}`);
+        // });
     
         return NextResponse.json({success: true, message: "Карточка успешно создана!", product});
     }catch(e){
@@ -98,9 +121,11 @@ export async function GET(req: NextRequest) {
         let page = req.nextUrl.searchParams.get('page') as string
         let limit = req.nextUrl.searchParams.get('limit') as string
         let tag = req.nextUrl.searchParams.get('tag') as string
+        let filter = req.nextUrl.searchParams.get('filter') as string
 
         let getPage = Number(page) || 1;
         let getLimit = Number(limit) || 9;
+        let getFilter = Number(filter) || 1;
 
         let offset = getPage * getLimit - getLimit;
 
@@ -154,28 +179,118 @@ export async function GET(req: NextRequest) {
                     }
                 })
             }
-    
-            const product = await db.product.findMany({
-                take: getLimit,
-                skip: offset,
-                where: {
-                    card: {
-                        id_category: Number(category_id)
-                    }
-                },
-                include: {
-                    card: {
+
+            let product; 
+            switch(getFilter){
+                case 0:
+                    //Без сортировки
+                    product = await db.product.findMany({
+                        take: getLimit,
+                        skip: offset,
+                        where: {
+                            card: {
+                                id_category: Number(category_id)
+                            }
+                        },
                         include: {
-                            company: true,
-                            category: true
+                            card: {
+                                include: {
+                                    company: true,
+                                    category: true,
+                                }
+                            },
+                            color: true,
+                            size: true,
+                            image: true,
+                            tag: true,
                         }
-                    },
-                    color: true,
-                    size: true,
-                    image: true,
-                    tag: true
-                }
-            });
+                    });
+                    break;
+                case 1:
+                    //Сортировка по цене, дешевле
+                    product = await db.product.findMany({
+                        take: getLimit,
+                        skip: offset,
+                        where: {
+                            card: {
+                                id_category: Number(category_id)
+                            }
+                        },
+                        include: {
+                            card: {
+                                include: {
+                                    company: true,
+                                    category: true,
+                                }
+                            },
+                            color: true,
+                            size: true,
+                            image: true,
+                            tag: true,
+                        },
+                        orderBy: {
+                            price: 'asc',
+                            
+                        },
+                    });
+                    break;
+                case 2:
+                    //Сортировка по цене, дороже
+                    product = await db.product.findMany({
+                        take: getLimit,
+                        skip: offset,
+                        where: {
+                            card: {
+                                id_category: Number(category_id)
+                            }
+                        },
+                        orderBy: {
+                            price: 'desc',
+                        },
+                        include: {
+                            card: {
+                                include: {
+                                    company: true,
+                                    category: true,
+                                }
+                            },
+                            color: true,
+                            size: true,
+                            image: true,
+                            tag: true,
+                        }
+                    });
+                    break;
+                case 3:
+                    //Сортировка по алфовиту
+                    product = await db.product.findMany({
+                        take: getLimit,
+                        skip: offset,
+                        where: {
+                            card: {
+                                id_category: Number(category_id)
+                            }
+                        },
+                        orderBy: {
+                            search: 'desc',
+                        },
+                        include: {
+                            card: {
+                                include: {
+                                    company: true,
+                                    category: true,
+                                }
+                            },
+                            color: true,
+                            size: true,
+                            image: true,
+                            tag: true,
+                        }
+                    });
+                    break;
+            }
+    
+            
 
             return NextResponse.json({count, category, product});
         }else{
@@ -210,7 +325,8 @@ export async function GET(req: NextRequest) {
                         card: {
                             include: {
                                 company: true,
-                                category: true
+                                category: true,
+                                productProperty: true
                             }
                         },
                         color: true,
@@ -219,32 +335,18 @@ export async function GET(req: NextRequest) {
                         tag: true
                     }
                 });
-    
-                const photo = await db.image.findMany({
-                    where: {
-                        id_product: Number(id)
-                    }
-                })
-    
+
                 const cardProduct = await db.product.findMany({
                     where: {
                         id_card: product?.id_card
                     },
                     include: {
-                        card: {
-                            include: {
-                                company: true,
-                                category: true
-                            }
-                        },
                         color: true,
                         size: true,
-                        image: true,
-                        tag: true
                     }
                 })
     
-                return NextResponse.json({product, photo, cardProduct});
+                return NextResponse.json({product, cardProduct});
             }
         }
         
@@ -267,13 +369,35 @@ export async function PUT(req: NextRequest) {
         const data = await req.formData()
         const acticle = data.get('acticle') as string;
         const id = data.get('id') as string;
-        const card = data.get('card') as string;
+        const id_card = data.get('card') as string;
         const isShow = data.get('isShow') as string;
-        const color = data.get('color') as string;
-        const size = data.get('size') as string;
+        const id_color = data.get('color') as string;
+        const id_size = data.get('size') as string;
         const id_tag = data.get('id_tag') as string;
         //const image = data.get('image') as string;
 
+        const card = await db.card.findUnique({
+            where: {
+                id: Number(id_card)
+            },
+            include: {
+                company: true,
+                category: true
+            }
+        });
+
+        const size = await db.size.findUnique({
+            where: {
+                id: Number(id_size)
+            }
+        });
+
+        const color = await db.color.findUnique({
+            where: {
+                id: Number(id_color)
+            }
+        });
+        
 
         const updateProduct = await db.product.update({
             where: {
@@ -281,11 +405,12 @@ export async function PUT(req: NextRequest) {
             },
             data: {
                 acticle: acticle,
-                id_card: Number(card),
+                id_card: Number(id_card),
                 isShow: Boolean(isShow),
-                id_color: Number(color),
-                id_size: Number(size),
-                id_tag: Number(id_tag)
+                id_color: Number(id_color),
+                id_size: Number(id_size),
+                id_tag: Number(id_tag),
+                search: `${card?.category?.name} ${card?.company?.name} ${card?.name} ${card?.company?.name} ${size?.name} ${color?.name}`
             },
         });
     

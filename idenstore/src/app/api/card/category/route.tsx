@@ -49,6 +49,7 @@ export async function GET(req: NextRequest) {
 
     let level = req.nextUrl.searchParams.get('level') as string
     let sort = req.nextUrl.searchParams.get('sort') as string
+    let product = req.nextUrl.searchParams.get('product') as string
 
     if(sort){
         try{
@@ -70,7 +71,28 @@ export async function GET(req: NextRequest) {
 
                 for(let j = 0; j<categoryEl.length; j++){
                     category[i].children[j].sort_id = `${i+1}-${j+1}`
+
+                    if(product){
+                        const product = await db.card.findMany({
+                            take: 6,
+                            where: {
+                                id_category: category[i].id
+                            },
+                            include: {
+                                company: true,
+                                category: true,
+                            }
+                        })
+
+                        category[i].children[j].products = product
+
+                        if(i == 1){
+                            break;
+                        }
+                    }
                 }
+
+                
             }
         
             return NextResponse.json({success: true, category});

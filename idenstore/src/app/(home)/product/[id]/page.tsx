@@ -26,6 +26,7 @@ import Loading from "@/components/Helps/Loading";
 import { useBasketContext } from "@/components/Helps/GlobalBasket";
 import Title from "@/components/UI/Title.components";
 import ProductsSwiper from "@/components/ProductsSwiper/ProductsSwiper.components";
+import { Placeholder } from "rsuite";
 
 export default function Catalog({params}:any) {
 
@@ -41,7 +42,7 @@ export default function Catalog({params}:any) {
     axios.get(`/api/product`).then((res) => {
       setNewProducts(res.data?.product);
     });
-  })
+  }, [])
   
   const {basket, setBasket} = useBasketContext();
 
@@ -49,7 +50,7 @@ export default function Catalog({params}:any) {
     axios.get(`/api/product?id=${params.id}`).then((res) => {
       setProduct(res.data?.product);
       setCardProduct(res.data?.cardProduct)
-      setPhoto(res.data?.photo)
+      setPhoto(res.data?.product?.image)
     }).finally(() => setLoading(false));
   }, [])
 
@@ -149,108 +150,128 @@ export default function Catalog({params}:any) {
     <main className={styles.main}>
       <div className={`container ${styles.container}`}>
         <div className={styles.photo}>
-            <Swiper
-            loop={true}
-            spaceBetween={10}
-            navigation={true}
-            thumbs={{ swiper: thumbsSwiper }}
-            modules={[FreeMode, Navigation, Thumbs]}
-            className="mySwiper2"
-          >
-            {photo.map((img: any) => 
-              <SwiperSlide key={img.id}>
-                <div className={styles.PhotoFull}>
-                  <img src={img.name}  alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
-                </div>
-              </SwiperSlide>
-            )}
-          </Swiper>
-          <Swiper
-            onSwiper={setThumbsSwiper}
-            loop={true}
-            spaceBetween={10}
-            slidesPerView={4}
-            freeMode={true}
-            watchSlidesProgress={true}
-            modules={[FreeMode, Navigation, Thumbs]}
-            className={`mySwiper ${styles.minSlider}`}
-          >
-            {photo.map((img: any) => 
-              <SwiperSlide key={img.id}>
-                <div className={styles.PhotoMin}>
-                  <img src={img.name}  alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
-                </div>
-              </SwiperSlide>
-            )}
-          </Swiper>
-        </div>
-        <div className={styles.product}>
-          <h1>{product?.card?.category?.name} {product?.card?.company?.name} {product?.card?.name} {product?.size?.name}, «{product?.color?.name}»</h1>
-          <div className={styles.params}>
-            <p>Цвет:</p>
-            <div className={styles.flex}>
-              {cardProduct.map((cardProd:any) => 
-                cardProd.id_size == product.id_size ? <Link href={`/product/${cardProd.id}`} key={cardProd.id} className={cardProd.id == params.id ? `${styles.color} ${styles.active}` : `${styles.color}`} style={{ background: `#${cardProd.color?.code}`}}></Link> : ""
+          {!loading?
+            <>
+              <Swiper
+              loop={true}
+              spaceBetween={10}
+              navigation={true}
+              thumbs={{ swiper: thumbsSwiper }}
+              modules={[FreeMode, Navigation, Thumbs]}
+              className="mySwiper2"
+            >
+              {photo.map((img: any) => 
+                <SwiperSlide key={img.id}>
+                  <div className={styles.PhotoFull}>
+                    <img src={img.name}  alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
+                  </div>
+                </SwiperSlide>
               )}
+            </Swiper>
+            <Swiper
+              onSwiper={setThumbsSwiper}
+              loop={true}
+              spaceBetween={10}
+              slidesPerView={4}
+              freeMode={true}
+              watchSlidesProgress={true}
+              modules={[FreeMode, Navigation, Thumbs]}
+              className={`mySwiper ${styles.minSlider}`}
+            >
+              {photo.map((img: any) => 
+                <SwiperSlide key={img.id}>
+                  <div className={styles.PhotoMin}>
+                    <img src={img.name}  alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
+                  </div>
+                </SwiperSlide>
+              )}
+            </Swiper>
+            </>
+          :
+          <Placeholder.Graph active style={{ height: 450, width: '100%', borderRadius: 8, background: 'linear-gradient(-45deg, #ffffff 25%, #eeeeee 37%, #ffffff 63%)' }} />
+          }
+        </div>
+        
+        <div className={styles.product}>
+          {!loading? <h1>{product?.card?.category?.name} {product?.card?.company?.name} {product?.card?.name} {product?.size?.name}, «{product?.color?.name}»</h1> : <h1><Placeholder.Graph active style={{ height: 15, width: 300 }} /></h1>}
+          <div className={styles.params}>
+            {!loading? <p>Цвет:</p> : <p><Placeholder.Graph active style={{ height: 15, width: 100 }} /></p>}
+            <div className={styles.flex}>
+              {!loading?
+                cardProduct.map((cardProd:any) => 
+                  cardProd.id_size == product.id_size ? <Link href={`/product/${cardProd.id}`} key={cardProd.id} className={cardProd.id == params.id ?`${styles.color} ${styles.active}` : cardProd.color?.code == 'FFF' || cardProd.color?.code == 'FFFFFF' ? `${styles.color} ${styles.white}` : `${styles.color}`} style={{ background: `#${cardProd.color?.code}`}}></Link> : ""
+                )
+                :
+                <>
+                  <Placeholder.Graph active style={{ height: 30, width: 30, marginRight: 8, borderRadius: '50%' }} />
+                  <Placeholder.Graph active style={{ height: 30, width: 30, marginRight: 8, borderRadius: '50%' }} />
+                  <Placeholder.Graph active style={{ height: 30, width: 30, marginRight: 8, borderRadius: '50%' }} />
+                  <Placeholder.Graph active style={{ height: 30, width: 30, marginRight: 8, borderRadius: '50%' }} />
+                </>
+              }
             </div>
           </div>
           <div className={`${styles.params} ${styles.mt}`}>
-            <p>Память:</p>
+            {!loading? <p>Память:</p> : <p><Placeholder.Graph active style={{ height: 15, width: 100 }} /></p>}
             <div className={styles.flex}>
-              {cardProduct.map((cardProd:any) => 
-                cardProd.id_color == product.id_color ? <Link href={`/product/${cardProd.id}`} key={cardProd.id} className={cardProd.id == params.id ? `${styles.size} ${styles.active}` : `${styles.size}`}>{cardProd.size.name}</Link> : ""
-              )}
+              {!loading?
+                cardProduct.map((cardProd:any) => 
+                  cardProd.id_color == product.id_color ? <Link href={`/product/${cardProd.id}`} key={cardProd.id} className={cardProd.id == params.id ? `${styles.size} ${styles.active}` : `${styles.size}`}>{cardProd.size.name}</Link> : ""
+                )
+                :
+                <>
+                  <Placeholder.Graph active style={{ height: 42, width: 75, marginRight: 8, borderRadius: 8 }} />
+                  <Placeholder.Graph active style={{ height: 42, width: 75, marginRight: 8, borderRadius: 8 }} />
+                  <Placeholder.Graph active style={{ height: 42, width: 75, marginRight: 8, borderRadius: 8 }} />
+                  <Placeholder.Graph active style={{ height: 42, width: 75, marginRight: 8, borderRadius: 8 }} />
+                  <Placeholder.Graph active style={{ height: 42, width: 75, marginRight: 8, borderRadius: 8 }} />
+                </>
+              }
             </div>
           </div>
 
           <hr className={styles.hr}/>
-
-          <p className={styles.price}>{(product?.price).toLocaleString()}₽</p>
+          {!loading? <p className={styles.price}>{(product?.price).toLocaleString()}₽</p> : <p><Placeholder.Graph active style={{ height: 25, width: 200, marginBottom: 20 }} /></p>}
           <div className={styles.flex}>
 
             {!isBasket? 
             <>
-            <Counter count={count} setCount={setCount}/>
-            <button className={styles.button} onClick={() => addToBasket()}>В корзину</button>
+            {!loading? <Counter count={count} setCount={setCount}/> : <Placeholder.Graph active style={{ height: 42, width: 114, borderRadius: 8}} />}
+            {!loading? <button className={styles.button} onClick={() => addToBasket()}>В корзину</button> : <Placeholder.Graph active style={{ height: 42, width: 165, borderRadius: 8, marginLeft: 14}} />}
             </>
             :
             <>
-            <Counter count={count} setCount={changeCount}/>
-            <button className={`${styles.button} ${styles.btnActive}`}>В корзине</button>
+            {!loading? <Counter count={count} setCount={changeCount}/> : <Placeholder.Graph active style={{ height: 42, width: 114, borderRadius: 8}} />}
+            {!loading? <button className={`${styles.button} ${styles.btnActive}`}>В корзине</button> : <Placeholder.Graph active style={{ height: 42, width: 165, borderRadius: 8, marginLeft: 14}} />}
             </>
             }
           </div>
-          <span className={styles.priceCredit}>Товар доступен в <p>рассрочку</p> от 15 999₽</span>
-
+          {/* <span className={styles.priceCredit}>Товар доступен в <p>рассрочку</p> от 15 999₽</span> */}
+          {!loading? <span className={styles.priceCredit}>Скоро товар будет доступен в <p>рассрочку</p> (в разработке)</span> : <Placeholder.Graph active style={{ height: 15, width: 380, marginTop: 14 }} />}
+          
           <hr className={styles.hr}/>
 
-          <h2>Описание</h2>
-          <p className={styles.description}>{product?.card?.description}</p>
+          {!loading? <h2>Описание</h2> : <h2><Placeholder.Graph active style={{ height: 20, width: 108, marginBottom: 12 }} /></h2>}
+          {!loading? <p className={styles.description}>{product?.card?.description}</p> : <Placeholder.Paragraph active style={{ marginBottom: 25 }} rows={4} />}
           
-          <h2>Характеристики</h2>
-
-          <div className={styles.propertys}>
-              <div className={styles.property}>
-                  <span>Серия</span>
-                  <p>iPhone 15 Pro Max</p>
-              </div>
-              <div className={styles.property}>
-                  <span>Серия</span>
-                  <p>iPhone 15 Pro Max</p>
-              </div>
-              <div className={styles.property}>
-                  <span>Серия</span>
-                  <p>iPhone 15 Pro Max</p>
-              </div>
-              <div className={styles.property}>
-                  <span>Серия</span>
-                  <p>iPhone 15 Pro Max</p>
-              </div>
-              <div className={styles.property}>
-                  <span>Серия</span>
-                  <p>iPhone 15 Pro Max</p>
-              </div>
-          </div>
+          
+          {product?.card?.productProperty[0]? 
+            !loading? <h2>Характеристики</h2> : <h2><Placeholder.Graph active style={{ height: 20, width: 175, marginBottom: 12 }} /></h2>
+            :
+            ""
+          }
+          
+          {!loading?
+            <div className={styles.propertys}>
+              {product?.card?.productProperty.map((el:any) => 
+                <div key={el.id} className={styles.property}>
+                    <span>{el.name}</span>
+                    <span>{el.value}</span>
+                </div>
+              )}
+            </div>
+          : <Placeholder.Paragraph active style={{ marginBottom: 25 }} rows={4} />}
+          
         </div>
       </div>
       <div className={`container`}>

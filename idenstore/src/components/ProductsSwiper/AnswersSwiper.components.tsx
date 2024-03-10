@@ -14,6 +14,7 @@ import 'swiper/css/navigation';
 const AnswerSwiper = ({answers}:any) => {
     return (
         <Swiper
+            className='padding-swiper'
             modules={[Pagination, Autoplay]}
             spaceBetween={8}
             slidesPerView={3.5}
@@ -23,17 +24,15 @@ const AnswerSwiper = ({answers}:any) => {
             scrollbar={{ draggable: true }}
             breakpoints={{
                 0: {
-                    slidesPerView: 1.2,
-                    spaceBetween: 8
+                    slidesPerView: 3.5,
                 },
                 // when window width is >= 640px
                 640: {
-                  slidesPerView: 1.4,
+                    slidesPerView: 3.5,
                 },
                 // when window width is >= 768px
                 768: {
-                    spaceBetween: 8,
-                    slidesPerView: 1.5,
+                    slidesPerView: 3.5,
                 },
                 1300: {
                     slidesPerView: 3.5,

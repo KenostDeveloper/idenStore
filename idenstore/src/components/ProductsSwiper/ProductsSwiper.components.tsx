@@ -15,6 +15,7 @@ import ProductCard from '../ProductCard/ProductCatd.components';
 const ProductsSwiper = ({products}:any) => {
     return (
         <Swiper
+            className='padding-swiper'
             modules={[Pagination, Autoplay]}
             spaceBetween={50}
             slidesPerView={2}
@@ -24,17 +25,15 @@ const ProductsSwiper = ({products}:any) => {
             scrollbar={{ draggable: true }}
             breakpoints={{
                 0: {
-                    slidesPerView: 1.2,
-                    spaceBetween: 30
+                    slidesPerView: 4.8,
                 },
                 // when window width is >= 640px
                 640: {
-                  slidesPerView: 1.4,
+                    slidesPerView: 4.8,
                 },
                 // when window width is >= 768px
                 768: {
-                    spaceBetween: 30,
-                    slidesPerView: 1.5,
+                    slidesPerView: 4.8,
                 },
                 1300: {
                     slidesPerView: 4.8,
@@ -42,7 +41,7 @@ const ProductsSwiper = ({products}:any) => {
             }}
         >
 
-            {products.map((product: any) => (
+            {products?.map((product: any) => (
                 <SwiperSlide key={product.id}>
                     <ProductCard slider={true} item={product}/>
                     {/* <div className={styles.slidePortfilio}>

@@ -45,10 +45,11 @@ const ProductCard = ({item, slider}: any) => {
         const formData = new FormData();
         formData.append("id_product", item.id);
         formData.append("quantity", "1");
+        setIsBasket(true)
 
         axios.post(`/api/basket`, formData).then((res) => {
-            if (res.data.success) {
-                setIsBasket(true)
+            if (!res.data.success) {
+                setIsBasket(false)
             }
         });
     };

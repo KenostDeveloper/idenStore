@@ -15,15 +15,17 @@ const BasketProduct = ({basket, index, setBasket} :any) => {
         setCount(item?.quantity)
     }, [basket])
 
+
     const changeCount = async (countValue: number) => {
         if(countValue != 0){
             const formData = new FormData();
             formData.append("id_product", item.id_product);
             formData.append("quantity", `${countValue}`);
+            setCount(countValue)
     
             axios.post(`/api/basket`, formData).then((res) => {
                 if (res.data.success) {
-                    setCount(countValue)
+                    // setCount(countValue)
                     const updateBasket = basket.map((basket: any) => {
                         if (basket.id_product != item.id_product) {
                           // No change

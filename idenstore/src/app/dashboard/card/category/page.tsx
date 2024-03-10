@@ -18,22 +18,6 @@ export default function DashnoardCategory() {
 
   const [user, setUser] = useState<any>([]);
 
-  // const data = [
-  //   {
-  //     id: '1',
-  //     labelName: 'Car',
-  //     status: 'ENABLED',
-  //     children: [
-  //       {
-  //         id: '1-1',
-  //         labelName: 'Mercedes Benz',
-  //         status: 'ENABLED',
-  //         count: 460
-  //       }
-  //     ]
-  //   }
-  // ];
-
   const [categoryAdd, setCategoryAdd] = useState({
     name: "",
     product_name: "",
@@ -61,7 +45,13 @@ export default function DashnoardCategory() {
     axios.post(`/api/card/category`, formData).then(res => {
         if(res.data.success){
             toast.success(res.data.message)
-            setCategory([res.data.category, ...category])
+            axios.get(`/api/card/category?sort=true`).then(res => {
+              setCategory(res.data?.category);
+            })
+        
+            axios.get(`/api/card/category?level=1`).then(res => {
+              setCategoryInput(res.data?.category.map((item: any) => ({ label: item.name, value: item.id })));
+            })
         }else{
             toast.error(res.data.message)
         }
@@ -114,7 +104,6 @@ export default function DashnoardCategory() {
     axios.get(`/api/card/category?level=1`).then(res => {
       setCategoryInput(res.data?.category.map((item: any) => ({ label: item.name, value: item.id })));
     })
-    
   }, [])
 
   if(loading){

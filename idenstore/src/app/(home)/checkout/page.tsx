@@ -4,6 +4,8 @@ import styles from './checkout.module.css'
 import Script from 'next/script';
 import { useBasketContext } from '@/components/Helps/GlobalBasket';
 import axios from 'axios';
+import { useSession } from "next-auth/react";
+import Loading from '@/components/Helps/Loading';
 
 export default function Checkout() {
   const [methodDelivert, setMetodDelivery] = useState(0);

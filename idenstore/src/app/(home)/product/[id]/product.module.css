@@ -5,6 +5,7 @@
     margin-bottom: 40px;
     flex-direction: column;
     align-items: center;
+    min-height: 100vh;
 }
 
 .container{
@@ -51,6 +52,23 @@
 .color.active{
     border: 2px solid #02121C;
     position: relative;
+}
+
+/* .color.white.active::before{
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid #000000;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    content: "";
+    transform: translate(-50%, -50%);
+} */
+
+.color.white{
+    /* border: 1px solid #02121C; */
+    box-shadow: -1px -1px 11px -1px rgb(123 123 123 / 50%);
 }
 
 .color.active::before{

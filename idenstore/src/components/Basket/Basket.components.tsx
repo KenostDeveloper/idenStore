@@ -21,7 +21,7 @@ const Basket = ({active, setActive}: any) => {
             // setBasketItems(res.data?.basket);
             setBasket(res.data?.basket)
         });
-    }, [basket])
+    }, [])
 
     useEffect(() => {
         if(basket){
@@ -32,6 +32,12 @@ const Basket = ({active, setActive}: any) => {
             }
             setAmount(temp);
         }
+
+        // axios.get(`/api/basket`).then((res) => {
+        //     // setBasketItems(res.data?.basket);
+        //     setBasket(res.data?.basket)
+        // });
+
     }, [basket])
     
     if(basket == null || basket?.length == 0){

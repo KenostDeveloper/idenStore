@@ -1,24 +1,152 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './Nav.module.css'
 import Link from 'next/link';
 import Basket from '../Basket/Basket.components';
+import axios from 'axios';
+import Sitebar from '../Sitebar/Sitebar.components';
 
 
 const Nav = () => {
     const [basketActive, setBasketActive] = useState(false)
+    const [search, setSearch] = useState("");
+    const [searchResult, setSearchResult] = useState<any>([])
+    const [searchResultCatalog, setSearchResultCatalog] = useState<any>([])
+    const [searchModal, setSearchModal] = useState(false);
+    const [loading, setLoading] = useState(true)
+    const [catalogMenu, setCatalogMenu] = useState(false);
+    const [catalogMenuList, setCatalogMenuList] = useState(0);
+    const rootEl = useRef<any>(null);
+    const [category, setCategory] = useState([]);
+    const [sitebar, setSitebar] = useState(false);
+
+    useEffect(() => {
+        if(basketActive || searchModal || catalogMenu || sitebar){
+            document.body.classList.add("overflow-y-hidden");
+        }else{
+            document.body.classList.remove("overflow-y-hidden");
+        }
+
+    }, [basketActive, searchModal, catalogMenu, sitebar])
+
+    useEffect(() => {
+        const onClick = (e: any) => rootEl.current.contains(e.target) || setSearchModal(false);
+        document.addEventListener('click', onClick);
+        return () => document.removeEventListener('click', onClick);
+    }, []);
+
+    useEffect(() => {
+        axios.get(`/api/card/category?sort=true&product=true`).then(res => {
+            setCategory(res.data?.category);
+        })
+    }, [])
+
+
+    useEffect(() => {
+        const Debounce = setTimeout(() => {
+            if(!search){
+                return null;
+            }
+
+            axios.get(`/api/product/search?query=${encodeURIComponent(search)}`).then((res) => {
+                setSearchResult(res.data?.products)
+                setSearchResultCatalog(res.data?.category)
+            }).finally(() => setLoading(false));
+            
+        }, 300)
+
+        return () => clearTimeout(Debounce);
+    }, [search])
+
+
     return (
         <nav className={styles.Nav}>
             <Basket active={basketActive} setActive={setBasketActive}/>
+            <Sitebar active={sitebar} setActive={setSitebar}/>
             <div className={`container ${styles.container}`}>
                 <div className={styles.left}>
-                    <Link className={styles.logo} href="/"><img src="/logo_full_two.svg" alt="" /></Link>
-                    <div className={styles.catalog}>
-                        <img src="/catalog.svg" alt="иконка каталога" />
-                        <p>Каталог</p>
+                    <div className={styles.sitebarMenu} onClick={() => setSitebar(true)}>
+                        <svg id="Layer_1" version="1.1" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><g><g><path d="M381,190.9H131c-11,0-20-9-20-20s9-20,20-20h250c11,0,20,9,20,20S392,190.9,381,190.9z"/></g><g><path d="M381,361.1H131c-11,0-20-9-20-20s9-20,20-20h250c11,0,20,9,20,20S392,361.1,381,361.1z"/></g><g><path d="M381,276H131c-11,0-20-9-20-20s9-20,20-20h250c11,0,20,9,20,20S392,276,381,276z"/></g></g></svg>
                     </div>
-                    <div className={styles.search}>
-                        <input  type="text" placeholder='Поиск' />
+                    <Link className={styles.logo} href="/"><img src="/logo_full_two.svg" alt="" /></Link>
+                    <div className={styles.catalog} onMouseEnter={() => setCatalogMenu(true)} onMouseLeave={() => 
+                        {setCatalogMenu(false)
+                        setCatalogMenuList(0)}                     
+                        }>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.71429 1H2.14286C1.51276 1 1 1.51276 1 2.14286V6.71429C1 7.34438 1.51276 7.85714 2.14286 7.85714H6.71429C7.34438 7.85714 7.85714 7.34438 7.85714 6.71429V2.14286C7.85714 1.51276 7.34438 1 6.71429 1ZM7.09524 6.71429C7.09524 6.92419 6.92457 7.09524 6.71429 7.09524H2.14286C1.93257 7.09524 1.7619 6.92419 1.7619 6.71429V2.14286C1.7619 1.93295 1.93257 1.7619 2.14286 1.7619H6.71429C6.92457 1.7619 7.09524 1.93295 7.09524 2.14286V6.71429Z" fill="white" stroke="white" stroke-width="0.5"/>
+                        <path d="M6.71429 10.1429H2.14286C1.51276 10.1429 1 10.6556 1 11.2857V15.8571C1 16.4872 1.51276 17 2.14286 17H6.71429C7.34438 17 7.85714 16.4872 7.85714 15.8571V11.2857C7.85714 10.6556 7.34438 10.1429 6.71429 10.1429ZM7.09524 15.8571C7.09524 16.0674 6.92457 16.2381 6.71429 16.2381H2.14286C1.93257 16.2381 1.7619 16.0674 1.7619 15.8571V11.2857C1.7619 11.0754 1.93257 10.9048 2.14286 10.9048H6.71429C6.92457 10.9048 7.09524 11.0754 7.09524 11.2857V15.8571Z" fill="white" stroke="white" stroke-width="0.5"/>
+                        <path d="M15.8572 1H11.2857C10.6556 1 10.1429 1.51276 10.1429 2.14286V6.71429C10.1429 7.34438 10.6556 7.85714 11.2857 7.85714H15.8572C16.4873 7.85714 17 7.34438 17 6.71429V2.14286C17 1.51276 16.4873 1 15.8572 1ZM16.2381 6.71429C16.2381 6.92419 16.0675 7.09524 15.8572 7.09524H11.2857C11.0755 7.09524 10.9048 6.92419 10.9048 6.71429V2.14286C10.9048 1.93295 11.0755 1.7619 11.2857 1.7619H15.8572C16.0675 1.7619 16.2381 1.93295 16.2381 2.14286V6.71429Z" fill="white" stroke="white" stroke-width="0.5"/>
+                        <path d="M15.8571 10.1429H11.2857C10.6556 10.1429 10.1428 10.6556 10.1428 11.2857V15.8571C10.1428 16.4872 10.6556 17 11.2857 17H15.8571C16.4872 17 17 16.4872 17 15.8571V11.2857C17 10.6556 16.4872 10.1429 15.8571 10.1429ZM16.2381 15.8571C16.2381 16.0674 16.0674 16.2381 15.8571 16.2381H11.2857C11.0754 16.2381 10.9047 16.0674 10.9047 15.8571V11.2857C10.9047 11.0754 11.0754 10.9048 11.2857 10.9048H15.8571C16.0674 10.9048 16.2381 11.0754 16.2381 11.2857V15.8571Z" fill="white" stroke="white" stroke-width="0.5"/>
+                        </svg>
+                        <Link className={styles.catalogText} href={`/catalog`}>Каталог</Link>
+
+                        <div className={catalogMenu? `${styles.catalogMenu} ${styles.show}` : `${styles.catalogMenu}`}>
+                            <ul className={styles.catalogMenuUl}>
+
+                                {category?.map((item:any, index:any) => 
+                                    <li className={catalogMenuList == index + 1? `${styles.catalogMainLink} ${styles.show}` : `${styles.catalogMainLink}`} key={item.id} onMouseEnter={() => setCatalogMenuList(index + 1)}>
+                                        <a className={styles.catalogLink} href={`/catalog/${item.id}`}>{item.name}</a>
+                                        {item.children.length == 0? '' :
+                                            <div className={catalogMenuList == index + 1? `${styles.catalogMenuEl} ${styles.show}` : `${styles.catalogMenuEl}`}>
+                                                {item.children.map((elem:any) => 
+                                                <>
+                                                    {elem.products.length == 0? "" : 
+                                                        <>
+                                                            <b>{elem.name}</b>
+                                                            {elem.products.map((el: any) => <a className={styles.catalogMenuElLink} key={el.id} href={`/product/${el.id}`}>{el?.category?.name} {el?.company?.name} {el?.name}</a>)}
+                                                            <a className={styles.catalogMenuElAll} href={`catalog/${elem.id}`}>Показать все</a>
+                                                        </>
+                                                    }
+                                                </>
+                                                )}
+                                                
+                                            </div>
+                                        }
+                                    </li>
+                                )}
+                            </ul>
+                        </div>
+                    </div>
+                    <div className={styles.search} ref={rootEl}>
+                        <input onClick={() => setSearchModal(true)} value={search} onChange={(e) => setSearch(e.target.value)} type="text" placeholder='Поиск' />
+                        <div className={searchModal && (search.length > 3 || searchResult.length !== 0)? `${styles.searchModal} ${styles.show}` : `${styles.searchModal}`}>
+
+                            {loading? 
+                                <span className={styles.loader}></span>
+                                :
+                                <>
+                                <div className={styles.searchModalCategory}>
+                                    <h2>Категории</h2>
+                                    <div className={styles.searchModalCategoryContainer}>
+                                        {searchResultCatalog?.map((item:any) => <a key={item.id} href={`/catalog/${item.id}`}>{item.name}</a>)}
+                                    </div>
+                                    <Link className={styles.searchModalCategoryAll} href={`/catalog`}>Все категории</Link>
+                                </div>
+                                <div className={styles.searchModalProducts}>
+                                    {searchResult?.map((product:any) => 
+                                        <Link onClick={() => setSearchModal(false)} key={product.id} href={`/product/${product.id}`} className={styles.searchProduct} >
+                                            {product?.image[0]?.name ?
+                                            <img src={`/product/${product?.image[0]?.name}`} alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
+                                            :
+                                            <img src={`/logo.svg`} alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
+                                            }
+                                            <div className={styles.searchProductText}>
+                                                <div className={styles.searchProductTextTitle}>
+                                                    <p className={styles.searchProductTextName}>{`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name}`}</p>
+                                                    <p className={styles.searchProductTextPrice}>{(product?.price).toLocaleString()}₽</p>
+                                                </div>
+                                                <p className={styles.searchProductTextInfo}>{`«${product?.color?.name}»`} / {`${product?.size?.name}`}</p>
+                                            </div>
+                                        </Link>
+                                    )}
+                                </div>
+                                </>
+                                
+                            }
+
+                            
+                        </div>
                     </div>
                 </div>
                 <div className={styles.right}>

@@ -115,8 +115,10 @@ export default function DashnoardProductAdd() {
       .then((res) => {
         if (res.data.success) {
           toast.success(res.data.message);
-          setProductList([res.data.product, ...productList])
-          setPhotoList([])
+          axios.get(`/api/product?limit=99`).then((res) => {
+            setProductList(res.data?.product);
+          });
+          // setPhotoList([])
         } else {
           toast.error(res.data.message);
         }
@@ -152,7 +154,7 @@ export default function DashnoardProductAdd() {
     axios.put(`/api/product`, formData).then((res) => {
       if (res.data.success) {
         toast.success(res.data.message);
-        axios.get(`/api/product`).then((res) => {
+        axios.get(`/api/product?limit=99`).then((res) => {
           setProductList(res.data?.product);
         });
       } else {
@@ -241,15 +243,9 @@ export default function DashnoardProductAdd() {
             className={styles.mb}
             listType="picture"
             onSuccess={(object, type) =>  {
-              // {setPhotoList(fileList.map((i) => i?.name))
-              // console.log(object);
               if(object.success){
-                // console.log(object?.name)
                 photoList.push(object?.name)
-                // console.log(photoList)
-                // setPhotoList([...photoList, object?.name])
               }
-              // console.log(type);
             }}
             multiple
             action="/api/product/image"
@@ -416,6 +412,8 @@ export default function DashnoardProductAdd() {
                 unCheckedChildren="Не отображать"
               />
             <SelectPicker data={tags} value={update.id_tag} onChange={(value:any, e) => setUpdate({ ...update, id_tag: value })} className={styles.mb} style={{ width: 500 }} appearance="default" placeholder="Теги товара"/>
+
+            
 
             </Modal.Body>
             <Modal.Footer>

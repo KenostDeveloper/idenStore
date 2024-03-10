@@ -9,6 +9,16 @@ const CatalogMenuItem = ({item, params}:any) => {
 
     const contentRef = useRef<any>(null);
 
+
+    useEffect(() => {
+        for(let i = 0; i < item.children.length; i++){
+            if(item.children[i].id == params){
+                setActive(true)
+            }
+        }
+    }, [])
+
+    
     // console.log(item)
 
     useEffect(() => {
@@ -20,8 +30,8 @@ const CatalogMenuItem = ({item, params}:any) => {
     return (
         <li className={styles.menu} onClick={() => setActive(!active)}>
             <p className={active? `${styles.active}` : ""}>{item?.name}</p>
-            <div className={styles.menuItem} ref={contentRef}>
-                {item?.children?.map((el:any) => <Link className={params.id == el.id? `${styles.active}`: ''} key={el.id} href={`/catalog/${el.id}`}>{el.name}</Link> )}
+            <div className={styles.menuItem} ref={contentRef} onClick={(e) => e.stopPropagation()} >
+                {item?.children?.map((el:any) => <Link className={params == el.id? `${styles.active}`: ''} key={el.id} href={`/catalog/${el.id}`}>{el.name}</Link> )}
             </div>
         </li>
     );

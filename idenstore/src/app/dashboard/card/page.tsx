@@ -7,6 +7,7 @@ import DashboardAccess from "@/components/DashboardAccess/DashboardAccess.compon
 import { Button, Input, InputPicker, Table, Modal, } from "rsuite";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { v4 as uuidv4 } from 'uuid';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -21,6 +22,51 @@ export default function DashnoardCardAdd() {
 
   const [company, setCompany] = useState([]);
   const [category, setCategory] = useState([]);
+
+  const [characteristics, setCharacteristics] = useState<any>([
+    {
+      id: uuidv4(),
+      name: "",
+      value: ""
+    }
+  ]);
+
+  // useEffect(() => {
+  //   console.log(characteristics);
+  // }, [characteristics])
+
+  function updateCharcteristicsProperty(id: string, property: any, list: any, setList: any) {
+    const nextShapes = list.map((characteristic: any) => {
+
+      if (characteristic.id != id) {
+      // No change
+      return characteristic;
+      } else {
+      // Return a new circle 50px below
+      return {
+      ...characteristic,
+      name: property,
+      };
+      }
+    });
+    setList(nextShapes);
+  }
+
+  function updateCharcteristicsValue(id: string, value: any, list: any, setList: any) {
+    const nextShapes = list.map((characteristic: any) => {
+      if (characteristic.id != id) {
+      // No change
+      return characteristic;
+      } else {
+      // Return a new circle 50px below
+      return {
+      ...characteristic,
+      value: value,
+      };
+      }
+    });
+    setList(nextShapes);
+  }
 
   const [card, setCard] = useState({
     name: "",
@@ -50,7 +96,7 @@ export default function DashnoardCardAdd() {
   }, [])
 
    //Добавить карточку
-   const createCard = async() => {
+  const createCard = async() => {
     setLoadingBtn(true)
     const formData = new FormData();
     formData.append("name", card.name);
@@ -58,15 +104,24 @@ export default function DashnoardCardAdd() {
     formData.append("company", card.company);
     formData.append("category", card.category);
 
-
     axios.post(`/api/card`, formData).then(res => {
-        if(res.data.success){
-          toast.success(res.data.message)
-          setCardList([res.data.card, ...cardList])
-        }else{
+
+      if(res.data.success){
+        axios.post(`/api/card/property`, JSON.stringify({characteristics, id_card: res.data.card.id})).then(res => {
+          if(res.data.success){
+            toast.success(res.data.message)
+            axios.get(`/api/card`).then(res => {
+              setCardList(res.data?.card);
+            })
+          }else{
             toast.error(res.data.message)
-        }
-    }).finally(() => setLoadingBtn(false))
+          }
+        })
+      }else{
+        toast.error(res.data.message)
+      }
+      setLoadingBtn(false);
+    })
   }
 
   //Удаление производитель
@@ -93,9 +148,17 @@ export default function DashnoardCardAdd() {
     axios.put(`/api/card`, formData).then(res => {
       if(res.data.success){
         toast.success(res.data.message)
-        axios.get(`/api/card`).then(res => {
-          setCardList(res.data?.card);
-        })
+
+          axios.put(`/api/card/property`, JSON.stringify({updateProperty, id_card: res.data.updateCard.id})).then(res => {
+            if(res.data.success){
+              toast.success(res.data.message)
+              axios.get(`/api/card`).then(res => {
+                setCardList(res.data?.card);
+              })
+            }else{
+              toast.error(res.data.message)
+            }
+          })
       }else{
         toast.error(res.data.message)
       }
@@ -113,6 +176,8 @@ export default function DashnoardCardAdd() {
     category: ""
   })
 
+  const [updateProperty, setUpdateProperty] = useState<any>([])
+
   useEffect(() => {
     axios.get(`/api/card`).then(res => {
       setCardList(res.data?.card);
@@ -128,13 +193,23 @@ export default function DashnoardCardAdd() {
   }else{
     return (
       <main className={styles.main}>
-        <h1>Создать карточку товара</h1>
-        <div className={styles.form}>
-          <Input style={{ width: 500 }} className={styles.mb} placeholder="Название товара" value={card.name} onChange={(value, e) => setCard({...card, name: value})} />
-          <Input style={{ width: 500 }} className={styles.mb} as="textarea" rows={3} placeholder="Описание" value={card.description} onChange={(value, e) => setCard({...card, description: value})} />
-          <InputPicker data={company} className={styles.mb} style={{ width: 500 }} placeholder="Производитель" value={card.company} onChange={(value, e) => setCard({...card, company: value})}/>
-          <InputPicker data={category} className={styles.mb} style={{ width: 500 }} placeholder="Категория" value={card.category} onChange={(value, e) => setCard({...card, category: value})}/>
-          <Button onClick={() => createCard()} loading={loadingBtn} appearance="primary">Добавить</Button>
+        <div className={styles.displayFlex}>
+          <div className={styles.form}>
+            <h1>Создать карточку товара</h1>
+            <Input style={{ width: 500 }} className={styles.mb} placeholder="Название товара" value={card.name} onChange={(value, e) => setCard({...card, name: value})} />
+            <Input style={{ width: 500 }} className={styles.mb} as="textarea" rows={3} placeholder="Описание" value={card.description} onChange={(value, e) => setCard({...card, description: value})} />
+            <InputPicker data={company} className={styles.mb} style={{ width: 500 }} placeholder="Производитель" value={card.company} onChange={(value, e) => setCard({...card, company: value})}/>
+            <InputPicker data={category} className={styles.mb} style={{ width: 500 }} placeholder="Категория" value={card.category} onChange={(value, e) => setCard({...card, category: value})}/>
+            <Button onClick={() => createCard()} loading={loadingBtn} appearance="primary">Добавить</Button>
+          </div> 
+          <div className={styles.characteristics}>
+            <h1>Характеристики</h1>
+            {characteristics.map((item:any) => <div key={item.id} className={styles.characteristicsItem}>
+              <Input style={{ width: 300 }} placeholder="Характеристика" value={item.name} onChange={(value) => updateCharcteristicsProperty(item.id, value, characteristics, setCharacteristics)}/>
+              <Input style={{ width: 300 }} placeholder="Значение" value={item.value} onChange={(value) => updateCharcteristicsValue(item.id, value, characteristics, setCharacteristics)}/>
+            </div>)}
+            <Button onClick={() => {setCharacteristics([...characteristics, {id: uuidv4(), name: "", value: ""}])}} className={styles.buttonAdd} appearance="primary">Добавить</Button>
+          </div>
         </div> 
 
         <hr/>
@@ -177,6 +252,7 @@ export default function DashnoardCardAdd() {
             <Button color="green" appearance="link"onClick={() => {
               setModal(true)
               setUpdate({id: rowData.id, name: rowData.name, description: rowData.description, company: rowData.id_company, category: rowData.id_category})
+              setUpdateProperty(rowData?.productProperty)
             }}>
               Изменить
             </Button>
@@ -207,6 +283,14 @@ export default function DashnoardCardAdd() {
           <Input style={{ width: 500 }} className={styles.mb} as="textarea" rows={3} placeholder="Описание" value={update.description} onChange={(value, e) => setUpdate({...update, description: value})} />
           <InputPicker data={company} className={styles.mb} style={{ width: 500 }} placeholder="Производитель" value={update.company} onChange={(value, e) => setUpdate({...update, company: value})}/>
           <InputPicker data={category} className={styles.mb} style={{ width: 500 }} placeholder="Категория" value={update.category} onChange={(value, e) => setUpdate({...update, category: value})}/>
+          
+          <p className={styles.mb}>Характеристики</p>
+          {updateProperty.map((item:any) => <div key={item.id} className={styles.characteristicsItem}>
+            <Input style={{ width: 300 }} placeholder="Характеристика" value={item.name} onChange={(value) => updateCharcteristicsProperty(item.id, value, updateProperty, setUpdateProperty)}/>
+            <Input style={{ width: 300 }} placeholder="Значение" value={item.value} onChange={(value) => updateCharcteristicsValue(item.id, value, updateProperty, setUpdateProperty)}/>
+          </div>)}
+          <Button onClick={() => {setUpdateProperty([...updateProperty, {id: uuidv4(), uid: uuidv4(), name: "", value: ""}])}} className={styles.buttonAdd} appearance="primary">Добавить</Button>
+
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={() => {

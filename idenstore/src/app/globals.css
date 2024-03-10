@@ -14,11 +14,12 @@
 /* Links */
 
 a, a:link, a:visited  {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 a:hover{
   color: #00CDF0;
+  text-decoration: none;
 }
 
 a:hover  {
@@ -99,7 +100,7 @@ legend {
 }
 
 body{
-  background: #EEEEEE;
+  background-color: #EEEEEE !important;
   color: #02121C;
 }
 
@@ -116,12 +117,21 @@ body{
   text-align: center !important;
 }
 
-.home .swiper-wrapper{
+.padding-swiper .swiper-wrapper{
   padding-bottom: 44px;
 }
 
 .swiper-pagination-bullet-active{
   background: #00CDF0 !important;
+}
+
+.overflow-y-hidden{
+  overflow-y: hidden;
+}
+
+html,
+body {
+  scrollbar-gutter: stable;
 }
 
 @media (max-width: 1400px) {

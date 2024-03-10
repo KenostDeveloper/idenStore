@@ -45,7 +45,8 @@ export async function GET(req: NextRequest) {
         const card = await db.card.findMany({
             include: {
                 company: true,
-                category: true
+                category: true,
+                productProperty: true
             }
         });
         
@@ -102,6 +103,12 @@ export async function DELETE(req: NextRequest) {
     }
 
     let idNumber = Number(id)
+
+    const deleteProperty = await db.productProperty.deleteMany({
+        where: {
+            id_card: idNumber,
+        },
+    })
 
     const deleteCard = await db.card.delete({
         where: {

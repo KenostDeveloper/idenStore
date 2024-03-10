@@ -18,3 +18,28 @@
     display: flex;
     flex-direction: column;
 }
+
+.displayFlex{
+    display: flex;
+    gap: 20px;
+}
+
+.characteristics{
+    display: flex;
+    width: 500px;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.characteristicsItem{
+    display: flex;
+    gap: 10px;
+}
+
+.buttonAdd{
+    margin-top: 10px;
+}
+
+.characteristicsItem + .characteristicsItem{
+    margin-top: 8px;
+}
