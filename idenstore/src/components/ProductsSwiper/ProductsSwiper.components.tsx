@@ -25,19 +25,25 @@ const ProductsSwiper = ({products}:any) => {
             scrollbar={{ draggable: true }}
             breakpoints={{
                 0: {
-                    slidesPerView: 4.8,
+                    slidesPerView: 1.5,
+                },
+                400: {
+                    slidesPerView: 2.2,
+                },
+                575: {
+                    slidesPerView: 2.3,
                 },
                 // when window width is >= 640px
-                640: {
-                    slidesPerView: 4.8,
+                768: {
+                    slidesPerView: 3,
                 },
                 // when window width is >= 768px
-                768: {
-                    slidesPerView: 4.8,
+                1001: {
+                    slidesPerView: 3.8,
                 },
-                1300: {
+                1201: {
                     slidesPerView: 4.8,
-                },
+                }
             }}
         >
 

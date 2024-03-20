@@ -23,10 +23,12 @@
     background: #FFF;
     transition: all 0.5s;
     padding: 32px 40px;
+    right: 0;
+    transform: translateX(100%);
 }
 
 .Basket.active .BasketContent{
-    right: 0;
+    transform: translateX(0%);
 }
 
 .title{
@@ -112,4 +114,14 @@
     width: 350px;
     margin-top: 20px;
     text-align: center;
+}
+
+@media (max-width:768px) {
+    .BasketContent{
+        width: 100%;
+    }
+}
+  
+@media (max-width:576px) {
+
 }

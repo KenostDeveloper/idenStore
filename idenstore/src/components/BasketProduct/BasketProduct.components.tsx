@@ -63,7 +63,7 @@ const BasketProduct = ({basket, index, setBasket} :any) => {
                 {item?.product?.image[0].name?
                     <img src={`/product/${item?.product?.image[0].name}`} alt={`${item?.card?.category?.name} ${item?.product?.card?.company?.name} ${item?.product?.card?.name}`} />
                 :
-                    <img src="/logo.svg" alt={`${item?.card?.category?.name} ${item?.product?.card?.company?.name} ${item?.product?.card?.name}`} />
+                    <img src="/logo_main.svg" alt={`${item?.card?.category?.name} ${item?.product?.card?.company?.name} ${item?.product?.card?.name}`} />
                 }
             </Link>
             <div className={styles.info}>

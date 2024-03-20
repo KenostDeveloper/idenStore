@@ -60,6 +60,7 @@ const Nav = () => {
 
 
     return (
+        <>
         <nav className={styles.Nav}>
             <Basket active={basketActive} setActive={setBasketActive}/>
             <Sitebar active={sitebar} setActive={setSitebar}/>
@@ -69,6 +70,7 @@ const Nav = () => {
                         <svg id="Layer_1" version="1.1" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><g><g><path d="M381,190.9H131c-11,0-20-9-20-20s9-20,20-20h250c11,0,20,9,20,20S392,190.9,381,190.9z"/></g><g><path d="M381,361.1H131c-11,0-20-9-20-20s9-20,20-20h250c11,0,20,9,20,20S392,361.1,381,361.1z"/></g><g><path d="M381,276H131c-11,0-20-9-20-20s9-20,20-20h250c11,0,20,9,20,20S392,276,381,276z"/></g></g></svg>
                     </div>
                     <Link className={styles.logo} href="/"><img src="/logo_full_two.svg" alt="" /></Link>
+                    <Link className={styles.logoMobile} href="/"><img src="/logo_main.svg" alt="" /></Link>
                     <div className={styles.catalog} onMouseEnter={() => setCatalogMenu(true)} onMouseLeave={() => 
                         {setCatalogMenu(false)
                         setCatalogMenuList(0)}                     
@@ -129,7 +131,7 @@ const Nav = () => {
                                             {product?.image[0]?.name ?
                                             <img src={`/product/${product?.image[0]?.name}`} alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
                                             :
-                                            <img src={`/logo.svg`} alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
+                                            <img src={`/logo_main.svg`} alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
                                             }
                                             <div className={styles.searchProductText}>
                                                 <div className={styles.searchProductTextTitle}>
@@ -173,6 +175,22 @@ const Nav = () => {
                 </div>
             </div>
         </nav>
+
+        <div className={styles.MobileMenu}>
+            <Link href="/" className={styles.MobileMenuItem}>
+                <img src="/home.svg" alt="" />
+                <p>Главная</p>
+            </Link>
+            <Link href="/catalog" className={styles.MobileMenuItem}>
+                <img src="/catalog.svg" alt="" />
+                <p>Каталог</p>
+            </Link>
+            <div onClick={() => setBasketActive(true)} className={styles.MobileMenuItem}>
+                <img src="/card.svg" alt="" />
+                <p>Корзина</p>
+            </div>
+        </div>
+        </>
     );
 };
 

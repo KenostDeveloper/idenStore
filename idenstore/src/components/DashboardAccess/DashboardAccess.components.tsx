@@ -24,7 +24,7 @@ const DashboardAccess = ({user: user}: any) => {
         if(user?.role == "USER"){
             return(
                 <div className={styles.auth}>
-                    <img src="/logo.svg" alt="" />
+                    <img src="/logo_main.svg" alt="" />
                     <p>У вас недостаточно прав!</p>
                     <Link href="/">На главную</Link>
                 </div>
@@ -32,7 +32,7 @@ const DashboardAccess = ({user: user}: any) => {
         }else{
             return(
                 <div className={styles.auth}>
-                    <img src="/logo.svg" alt="" />
+                    <img src="/logo_main.svg" alt="" />
                     <p className={styles.btn} onClick={() => signIn('yandex')}>Войти</p>
                 </div>
             )

@@ -1,6 +1,7 @@
 .title{
     font-size: 50px;
     font-weight: 700;
+    color: #02121C;
 }
 
 .margin{
@@ -8,3 +9,34 @@
     margin-bottom: 50px;
 }
 
+
+
+@media (max-width: 1400px) {
+
+}
+
+@media (max-width: 1200px) {
+
+}
+
+@media (max-width:1000px) {
+    .margin{
+        margin-top: 50px;
+        margin-bottom: 30px;
+    }
+}
+    
+@media (max-width:768px) {
+    .title{
+        font-size: 30px;
+    }
+
+    .margin{
+        margin-top: 40px;
+        margin-bottom: 20px;
+    }
+}
+    
+@media (max-width:576px) {
+
+}

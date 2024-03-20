@@ -24,19 +24,22 @@ const AnswerSwiper = ({answers}:any) => {
             scrollbar={{ draggable: true }}
             breakpoints={{
                 0: {
-                    slidesPerView: 3.5,
+                    slidesPerView: 1,
+                },
+                575: {
+                    slidesPerView: 1.5,
                 },
                 // when window width is >= 640px
-                640: {
-                    slidesPerView: 3.5,
+                768: {
+                    slidesPerView: 2.5,
                 },
                 // when window width is >= 768px
-                768: {
-                    slidesPerView: 3.5,
+                1001: {
+                    slidesPerView: 3,
                 },
-                1300: {
+                1201: {
                     slidesPerView: 3.5,
-                },
+                }
             }}
         >
 

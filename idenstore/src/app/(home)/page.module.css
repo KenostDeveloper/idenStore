@@ -130,7 +130,7 @@
     position: absolute;
     bottom: 20px;
     left: 20px;
-    z-index: 1;
+    z-index: 2;
 }
 
 .span{
@@ -211,6 +211,7 @@
     font-size: 18px;
     line-height: 1.1;
     font-weight: 900;
+    margin: 0;
 }
 
 
@@ -274,14 +275,108 @@
     .secondaryBanners{
         width: 250px;
     }
+
+    .bannerImg{
+        right: 10px;
+    }
+
+    .shadow1{
+        width: 460px;
+    }
+
+    .textBanner{
+        font-size: 22px;
+    }
+
+    .text p{
+        font-size: 16px;
+    }
+
+    .custom p:nth-child(2){
+        padding-left: 60px;
+    }
+    
+    .advantageItem{
+        height: 210px;
+        padding: 16px;
+    }
+    
+    .custom2 p:nth-child(1){
+        padding-left: 0px;
+    }
 }
 
 @media (max-width:1000px) {
+    .banners{
+        flex-direction: column;
+        height: 100%;
+        gap: 10px;
+    }
 
+    .homeBanner{
+        width: 100%;
+        height: 400px;
+    }
+
+    .secondaryBanners{
+        flex-direction: row;
+    }
+
+    .secondaryBanners{
+        width: 100%;
+        gap: 10px;
+    }
+
+    .bannerImg{
+        height: 360px;
+        right: 30px;
+    }
+
+    .advantage{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .text p{
+        font-size: 18px;
+    }
+
+    .advantageItem{
+        width: calc(calc(100% - 20px) / 3);
+    }
+
+    .custom2 p:nth-child(1){
+        padding-left: 20px;
+    }
 }
   
 @media (max-width:768px) {
+    .homeBannerText{
+        padding: 40px 24px 0 24px;
+    }
 
+    .bannerOnline{
+        font-size: 12px !important;
+        padding-left: 14px;
+        margin: 0 !important;
+    }
+
+    .homeBannerText h1{
+        font-size: 43px;
+        margin-bottom: 20px;
+        max-width: 300px;
+    }
+
+    .homeBannerText p{
+        max-width: 300px;
+    }
+
+    .advantageItem{
+        width: calc(calc(100% - 20px) / 2);
+    }
 }
   
 @media (max-width:576px) {
