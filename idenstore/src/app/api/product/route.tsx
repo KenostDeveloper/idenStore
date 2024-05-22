@@ -349,10 +349,7 @@ export async function GET(req: NextRequest) {
                 return NextResponse.json({product, cardProduct});
             }
         }
-        
 
-        
-    
     }catch(e){
         return NextResponse.json({success: false, message: "Произошла неизвестная ошибка, попробуйте снова :(", e});
     }
