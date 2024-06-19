@@ -82,6 +82,7 @@ model Product{
   id_tag Int?
   tag     Tag?       @relation(fields: [id_tag], references: [id])
   search String?
+  orderProducts      OrderProducts[]
   @@fulltext([search])
 }
 
@@ -163,4 +164,27 @@ model productProperty{
   id_card Int
   name String
   value String
+}
+
+model Orders {
+  id            Int             @id @default(autoincrement())
+  date          DateTime?
+  cost          Float?
+  deliveryMethod String?
+  surname String?
+  name String?
+  patronymic String?
+  email String?
+  phone String?
+  orderProducts OrderProducts[]
+}
+
+model OrderProducts {
+  id        Int     @id @default(autoincrement())
+  order     Orders  @relation(fields: [id_order], references: [id])
+  id_order   Int
+  product   Product @relation(fields: [id_product], references: [id])
+  id_product Int
+  price     Int?
+  quantity  Int?
 }

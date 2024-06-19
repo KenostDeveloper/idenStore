@@ -34,8 +34,8 @@ const Catalog = () => {
               </div>
               <div className={`${styles.selection} ${styles.h50}`}>
                   <Link href="#" className={styles.catalogCard2}>
-                    {/* Умные калонки */}
-                  <p className={styles.catalogName4}>Умные калонки</p>
+                    {/* Умные колонки */}
+                  <p className={styles.catalogName4}>Умные колонки</p>
                     <img className={styles.catalogImg4} src="/catalog/4.png" alt="" />
                   </Link>
               </div>

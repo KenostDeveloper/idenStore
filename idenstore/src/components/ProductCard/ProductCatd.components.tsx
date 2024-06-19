@@ -70,7 +70,7 @@ const ProductCard = ({item, slider}: any) => {
             </Link>
 
             <div className={style.ProductCardText}>
-                <Link href={`/product/${item.id}`}><p>{item?.card?.category?.name} {item?.card?.company?.name} {item?.card?.name} {item?.size?.name}, «{item?.color?.name}»</p></Link>
+                <Link href={`/product/${item.id}`}><p>{item?.card?.category?.product_name} {item?.card?.company?.name} {item?.card?.name} {item?.size?.name}, «{item?.color?.name}»</p></Link>
                 <b>{(item?.price).toLocaleString()}₽</b>
                 {!isBasket? 
                 <button onClick={() => addToBasket()}>В корзину</button>

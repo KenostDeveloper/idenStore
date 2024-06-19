@@ -27,10 +27,10 @@ const DashboardMenu = () => {
               <Sidenav.Body>
                 <Nav activeKey={activeKey} onSelect={setActiveKey} >
                   <Nav.Item eventKey="1" icon={<DashboardIcon />}>
-                    Dashboard
+                    Главная
                   </Nav.Item>
-                  <Nav.Item eventKey="2" icon={<GroupIcon />}>
-                    Пользователи
+                  <Nav.Item eventKey="2" icon={<GridIcon />}>
+                    Заказы
                   </Nav.Item>
                   <Nav.Menu eventKey="3" title="Товары" icon={<MobileIcon />}>
                     <Link className={styles.link} href="/dashboard/product"><Nav.Item eventKey="3-1" icon={<PlusIcon />}>Товары</Nav.Item></Link>
@@ -39,15 +39,6 @@ const DashboardMenu = () => {
                     <Link className={styles.link} href="/dashboard/card"><Nav.Item eventKey="3-2" icon={<PlusIcon />}>Карточки товаров</Nav.Item></Link>
                     <Link className={styles.link} href="/dashboard/card/company"><Nav.Item eventKey="3-3">Производители</Nav.Item></Link>
                     <Link className={styles.link} href="/dashboard/card/category"><Nav.Item eventKey="3-4">Категории</Nav.Item></Link>
-                  </Nav.Menu>
-                  <Nav.Menu eventKey="4" title="Заказы" icon={<GridIcon />}>
-                    <Nav.Item eventKey="4-1">Applications</Nav.Item>
-                    <Nav.Item eventKey="4-2">Channels</Nav.Item>
-                    <Nav.Item eventKey="4-3">Versions</Nav.Item>
-                    <Nav.Menu eventKey="4-5" title="Custom Action">
-                      <Nav.Item eventKey="4-5-1">Action Name</Nav.Item>
-                      <Nav.Item eventKey="4-5-2">Action Params</Nav.Item>
-                    </Nav.Menu>
                   </Nav.Menu>
                 </Nav>
               </Sidenav.Body>

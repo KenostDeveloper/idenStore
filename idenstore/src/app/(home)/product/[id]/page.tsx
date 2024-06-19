@@ -193,7 +193,7 @@ export default function Catalog({params}:any) {
         </div>
         
         <div className={styles.product}>
-          {!loading? <h1>{product?.card?.category?.name} {product?.card?.company?.name} {product?.card?.name} {product?.size?.name}, «{product?.color?.name}»</h1> : <h1><Placeholder.Graph active style={{ height: 15, width: 300 }} /></h1>}
+          {!loading? <h1>{product?.card?.category?.product_name} {product?.card?.company?.name} {product?.card?.name} {product?.size?.name}, «{product?.color?.name}»</h1> : <h1><Placeholder.Graph active style={{ height: 15, width: 300 }} /></h1>}
           <div className={styles.params}>
             {!loading? <p>Цвет:</p> : <p><Placeholder.Graph active style={{ height: 15, width: 100 }} /></p>}
             <div className={styles.flex}>
