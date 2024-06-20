@@ -163,7 +163,7 @@ export default function Catalog({params}:any) {
               {photo.map((img: any) => 
                 <SwiperSlide key={img.id}>
                   <div className={styles.PhotoFull}>
-                    <img src={img.name}  alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
+                    <img src={`/static/products/${img.name}`}  alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
                   </div>
                 </SwiperSlide>
               )}
