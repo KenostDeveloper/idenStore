@@ -247,7 +247,7 @@ export default function Catalog({params}:any) {
             }
           </div>
           {/* <span className={styles.priceCredit}>Товар доступен в <p>рассрочку</p> от 15 999₽</span> */}
-          {!loading? <span className={styles.priceCredit}>Скоро товар будет доступен в <p>рассрочку</p> (в разработке)</span> : <Placeholder.Graph active style={{ height: 15, width: 380, marginTop: 14 }} />}
+          {!loading? <span className={styles.priceCredit}>{product?.price / 3} ₽/мес. в <p>рассрочку</p> на 3 месяца  за </span> : <Placeholder.Graph active style={{ height: 15, width: 380, marginTop: 14 }} />}
           
           <hr className={styles.hr}/>
 
