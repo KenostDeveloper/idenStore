@@ -162,7 +162,7 @@ export async function GET(req: NextRequest) {
         if(!id){
             const count = await db.orders.count();
 
-            const orders = await db.orders.findMany({
+            const orders:any = await db.orders.findMany({
                 include: {
                     orderProducts: {
                         include: {
@@ -185,6 +185,12 @@ export async function GET(req: NextRequest) {
                     }
                 }
             });
+
+            for(let i = 0; i < orders.length; i++){
+                orders[i].fio = orders[i].surname + " " + orders[i].name + " " + orders[i].patronymic
+                orders[i].method = orders[i].deliveryMethod == 1? "Доставка" : "Самовывоз"
+            }
+
 
             return NextResponse.json({count, orders});
 

@@ -29,7 +29,7 @@ const DashboardMenu = () => {
                   <Nav.Item eventKey="1" icon={<DashboardIcon />}>
                     Главная
                   </Nav.Item>
-                  <Nav.Item eventKey="2" icon={<GridIcon />}>
+                  <Nav.Item href="/dashboard/orders" eventKey="2" icon={<GridIcon />} >
                     Заказы
                   </Nav.Item>
                   <Nav.Menu eventKey="3" title="Товары" icon={<MobileIcon />}>

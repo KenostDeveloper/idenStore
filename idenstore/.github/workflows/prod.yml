@@ -1,0 +1,42 @@
+name: prod kenost developer
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build HiRes frontend image
+        run: docker build -t hiresstudio343/hires:latest . -f Dockerfile.prod
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Push HiRes frontend image
+        run: docker image push hiresstudio343/hires:latest
+
+      - name: Deploy HiRes frontend via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            rm -rf hires
+            git clone git@github.com:hiresstudio/hires.git
+            cd ./hires
+            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+            docker-compose -f docker-compose-prod.yml down
+            docker image rm hiresstudio343/hires:latest
+            docker-compose -f docker-compose-prod.yml up -d --build
