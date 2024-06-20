@@ -122,7 +122,7 @@ export default function Checkout() {
                 {basket.map((item:any) => 
                   <div key={item.id} className={styles.item}>
                     {item?.product?.image[0].name?
-                        <img src={`/product/${item?.product?.image[0].name}`} alt={`${item?.card?.category?.name} ${item?.product?.card?.company?.name} ${item?.product?.card?.name}`} />
+                        <img src={`/static/products/${item?.product?.image[0].name}`} alt={`${item?.card?.category?.name} ${item?.product?.card?.company?.name} ${item?.product?.card?.name}`} />
                     :
                         <img src="/logo_main.svg" alt={`${item?.card?.category?.name} ${item?.product?.card?.company?.name} ${item?.product?.card?.name}`} />
                     }

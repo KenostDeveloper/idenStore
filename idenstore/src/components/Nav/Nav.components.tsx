@@ -129,7 +129,7 @@ const Nav = () => {
                                     {searchResult?.map((product:any) => 
                                         <Link onClick={() => setSearchModal(false)} key={product.id} href={`/product/${product.id}`} className={styles.searchProduct} >
                                             {product?.image[0]?.name ?
-                                            <img src={`/product/${product?.image[0]?.name}`} alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
+                                            <img src={`/static/products/${product?.image[0]?.name}`} alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
                                             :
                                             <img src={`/logo_main.svg`} alt={`${product?.card?.category?.name} ${product?.card?.company?.name} ${product?.card?.name} ${product?.size?.name}, «${product?.color?.name}»`}/>
                                             }

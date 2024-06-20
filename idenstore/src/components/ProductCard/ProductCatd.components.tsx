@@ -18,7 +18,7 @@ const ProductCard = ({item, slider}: any) => {
 
     useEffect(() => {
         for(let i = 0; i < item.image.length; i++){
-            image.push(`/product/${item.image[i]?.name}`)
+            image.push(`/static/products/${item.image[i]?.name}`)
         }
         // item.image?.map((img : any) => image.push(`/product/${img.name}`))
         setLoading(false)

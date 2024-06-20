@@ -59,16 +59,16 @@ const BasketProduct = ({basket, index, setBasket} :any) => {
 
     return (
         <div className={styles.product}>
-            <Link href={`/product/${item?.product?.id}`} className={styles.img}>
+            <Link href={`/static/products/${item?.product?.id}`} className={styles.img}>
                 {item?.product?.image[0].name?
-                    <img src={`/product/${item?.product?.image[0].name}`} alt={`${item?.card?.category?.name} ${item?.product?.card?.company?.name} ${item?.product?.card?.name}`} />
+                    <img src={`/static/products/${item?.product?.image[0].name}`} alt={`${item?.card?.category?.name} ${item?.product?.card?.company?.name} ${item?.product?.card?.name}`} />
                 :
                     <img src="/logo_main.svg" alt={`${item?.card?.category?.name} ${item?.product?.card?.company?.name} ${item?.product?.card?.name}`} />
                 }
             </Link>
             <div className={styles.info}>
                 <div className={styles.infoTitle}>
-                    <Link href={`/product/${item?.product?.id}`}>{item?.card?.category?.name} {item?.product?.card?.company?.name} {item?.product?.card?.name}</Link>
+                    <Link href={`/static/products/${item?.product?.id}`}>{item?.card?.category?.name} {item?.product?.card?.company?.name} {item?.product?.card?.name}</Link>
                     <div className={styles.productClose} onClick={() => deleteProductBasket(item?.product?.id)}>
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M8.24178 7L13.8298 12.588L12.588 13.8298L7 8.24178L1.41197 13.8298L0.170186 12.588L5.75822 7L0.170186 1.41197L1.41197 0.170184L7 5.75822L12.588 0.170184L13.8298 1.41197L8.24178 7Z" fill="#02121C"/>
