@@ -205,6 +205,9 @@ export async function GET(req: NextRequest) {
                             tag: true,
                         }
                     });
+
+                    product = shuffle(product)
+
                     break;
                 case 1:
                     //Сортировка по цене, дешевле
@@ -462,3 +465,21 @@ export async function DELETE(req: NextRequest) {
 
     
 }
+
+const shuffle = (array: any) => {
+    let m = array.length, t, i;
+  
+    // Пока есть элементы для перемешивания
+    while (m) {
+  
+      // Взять оставшийся элемент
+      i = Math.floor(Math.random() * m--);
+  
+      // И поменять его местами с текущим элементом
+      t = array[m];
+      array[m] = array[i];
+      array[i] = t;
+    }
+  
+    return array;
+  }
