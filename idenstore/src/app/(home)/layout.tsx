@@ -10,7 +10,7 @@ import { CustomProvider } from 'rsuite';
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Iden Store",
+  title: "Iden Store | Интернет-магазин электроники",
   description: "Iden Store | Интернет-магазин электроники",
 };
 
